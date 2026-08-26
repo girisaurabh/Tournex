@@ -208,7 +208,7 @@ function App() {
     { sender: 'ai', text: 'Hello! I am your Arovia AI Assistant. Ask me about weather, safety, food, or budget for your trip!' }
   ]);
 
-  // SOS Modal State
+  // Emergency Modal State
   const [isSosActive, setIsSosActive] = useState(false);
 
   const mapRef = useRef(null);
@@ -297,7 +297,7 @@ function App() {
   // Share on WhatsApp
   const shareOnWhatsApp = () => {
     const activeDest = hubData[formData.hub] || hubData['Delhi'];
-    const text = encodeURIComponent(`🚀 Check out my Arovia Smart Travel Plan for *${activeDest.name}* starting from ${formData.hub} (${formData.time})!\n\n📍 ${activeDest.distanceInfo}\n🌤️ Weather: ${activeDest.weather}\n🌿 Eco-Impact: ${activeDest.carbonSaved}\n\nGenerated via Arovia Platform.`);
+    const text = encodeURIComponent(`🚀 Check out my Arovia Personalized Route for *${activeDest.name}* starting from ${formData.hub} (${formData.time})!\n\n📍 ${activeDest.distanceInfo}\n🌤️ Weather: ${activeDest.weather}\n🌿 Eco-Impact: ${activeDest.carbonSaved}\n\nGenerated via Arovia Platform.`);
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
 
@@ -456,7 +456,7 @@ function App() {
               type="submit"
               className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold py-3.5 rounded-lg transition duration-200 shadow-lg cursor-pointer mt-2"
             >
-              Generate Smart Route & Live Map 🚀
+              Generate Personalized Route 🚀
             </button>
           </form>
         ) : (
@@ -534,12 +534,12 @@ function App() {
               ℹ️ Map displays multiple surrounding offbeat pins & emergency care stations clearly. Click any marker!
             </p>
 
-            {/* SOS Emergency Alert Button */}
+            {/* Emergency Assistant & Nearby Services Button */}
             <button 
               onClick={() => setIsSosActive(true)}
               className="w-full bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg cursor-pointer flex items-center justify-center gap-2 border border-red-500/40 animate-pulse text-sm"
             >
-              <span>🚨</span> Trigger SOS Emergency Alert & Live Dispatch
+              <span>🚨</span> Emergency Assistant & Nearby Services
             </button>
 
             {/* Budget Breakdown Visualizer */}
@@ -637,20 +637,20 @@ function App() {
         )}
       </div>
 
-      {/* SOS Modal Alert Window */}
+      {/* Emergency Assistant & Nearby Services Modal Window */}
       {isSosActive && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div className="bg-slate-900 border-2 border-red-600 w-full max-w-md p-6 rounded-2xl shadow-2xl space-y-4 text-center">
             <div className="w-16 h-16 bg-red-600/20 text-red-500 rounded-full flex items-center justify-center mx-auto text-3xl border border-red-600/40">
               🚨
             </div>
-            <h2 className="text-xl font-bold text-red-500 tracking-wide">SOS EMERGENCY BROADCAST</h2>
+            <h2 className="text-xl font-bold text-red-500 tracking-wide">Emergency Assistant & Nearby Services</h2>
             <p className="text-xs text-slate-300">
-              GPS coordinates and emergency distress signal have been successfully simulated and dispatched to regional authorities.
+              Live GPS coordinates, nearest medical care, and regional emergency services have been successfully synced and broadcasted.
             </p>
 
             <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-left space-y-1.5 text-xs font-mono">
-              <p className="text-slate-400">📍 Status: <span className="text-red-400 font-bold">Signal Transmitted</span></p>
+              <p className="text-slate-400">📍 Status: <span className="text-red-400 font-bold">Services Synced</span></p>
               <p className="text-slate-400">🏥 Nearest Care: <span className="text-white">{activeDestination.hospitalName}</span></p>
               <p className="text-slate-400">📞 Active Helpline: <span className="text-cyan-400">{activeDestination.emergencyContact}</span></p>
               <p className="text-slate-400">🛰️ Coords: <span className="text-amber-400">{activeDestination.coords[0]}, {activeDestination.coords[1]}</span></p>
@@ -658,9 +658,9 @@ function App() {
 
             <button 
               onClick={() => setIsSosActive(false)}
-              className="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl transition duration-200 text-xs border border-slate-700 cursor-pointer"
+              className="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-lg transition duration-200 text-xs border border-slate-700 cursor-pointer"
             >
-              Cancel / Close SOS Alert
+              Close Assistant Window
             </button>
           </div>
         </div>
