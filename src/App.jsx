@@ -220,7 +220,7 @@ function App() {
     setCheckedItems(prev => ({ ...prev, [item]: !prev[item] }));
   };
 
-  // Fixed Smart Chat Message Handler (Strict Weather & Food Separation)
+  // Fixed Smart Chat Message Handler
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
@@ -671,7 +671,7 @@ function App() {
               ))}
             </div>
 
-            (Chat Input Form)
+            {/* Chat Input Form */}
             <form onSubmit={handleSendMessage} className="p-2.5 bg-slate-800 border-t border-slate-700 flex gap-2">
               <input 
                 type="text" 
