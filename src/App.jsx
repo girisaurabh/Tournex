@@ -33,7 +33,6 @@ const hubData = {
       { title: 'Siliserh Lake Palace', tag: 'Scenic Water View' },
       { title: 'Bala Quila Fort', tag: 'Ancient Architecture' }
     ],
-    // Surrounding map markers
     nearbySpots: [
       { name: 'Sariska Tiger Reserve', coords: [27.3200, 76.4400], desc: 'Famous wildlife sanctuary & tiger habitat' },
       { name: 'Siliserh Lake Palace', coords: [27.5100, 76.5800], desc: 'Royal lakeside palace & boating point' },
@@ -264,7 +263,7 @@ function App() {
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
 
-  // Leaflet Map Initialization with Multi-Spot Markers
+  // Leaflet Map Initialization with Auto-Fitting Bounds for All Nearby Markers
   useEffect(() => {
     if (submitted && mapRef.current) {
       const currentDest = hubData[formData.hub] || hubData['Delhi'];
@@ -274,16 +273,18 @@ function App() {
         mapInstanceRef.current = null;
       }
 
-      const map = L.map(mapRef.current).setView(currentDest.coords, 11);
+      const map = L.map(mapRef.current);
       
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; Arovia Intelligence Routing'
       }).addTo(map);
 
+      const markerCoordinates = [];
+
       // Main Destination Marker
       L.marker(currentDest.coords).addTo(map)
-        .bindPopup(`<b>🎯 Main Hub: ${currentDest.name}</b><br />Crowd: ${currentDest.crowd}`)
-        .openPopup();
+        .bindPopup(`<b>🎯 Main Hub: ${currentDest.name}</b><br />Crowd: ${currentDest.crowd}`);
+      markerCoordinates.push(currentDest.coords);
 
       // Hospital Marker
       L.circleMarker(currentDest.hospital, {
@@ -292,12 +293,18 @@ function App() {
         fillOpacity: 0.6,
         radius: 8
       }).addTo(map).bindPopup(`<b>🏥 Emergency Care:</b> ${currentDest.hospitalName}`);
+      markerCoordinates.push(currentDest.hospital);
 
       // Surrounding Offbeat Spot Markers
       currentDest.nearbySpots.forEach((spot) => {
         L.marker(spot.coords).addTo(map)
           .bindPopup(`<b>📍 Offbeat Spot: ${spot.name}</b><br />${spot.desc}`);
+        markerCoordinates.push(spot.coords);
       });
+
+      // Automatically fit map bounds to encompass all markers nicely
+      const bounds = L.latLngBounds(markerCoordinates);
+      map.fitBounds(bounds, { padding: [40, 40] });
 
       mapInstanceRef.current = map;
     }
@@ -462,13 +469,13 @@ function App() {
               </div>
             </div>
 
-            {/* Interactive Map Box with Multiple Markers */}
+            {/* Interactive Map Box with Multi-Markers & Auto-Fit Bounds */}
             <div 
               ref={mapRef} 
-              className="w-full h-56 rounded-xl border border-slate-700 z-10 shadow-inner"
+              className="w-full h-64 rounded-xl border border-slate-700 z-10 shadow-inner"
             ></div>
             <p className="text-[10px] text-slate-400 text-center italic">
-              ℹ️ Map displays multiple surrounding offbeat spots & emergency healthcare stations. Click markers for details!
+              ℹ️ Map auto-fits to show multiple surrounding offbeat pins (Sariska, Siliserh, Bala Quila) & hospital. Click any pin!
             </p>
 
             {/* SOS Emergency Alert Button */}
