@@ -220,7 +220,24 @@ function App() {
     setCheckedItems(prev => ({ ...prev, [item]: !prev[item] }));
   };
 
-  // Fixed Smart Chat Message Handler
+  // Helper to dynamically calculate itinerary days based on input time
+  const getDynamicItinerary = (destination) => {
+    const match = formData.time.match(/\d+/);
+    const numDays = match ? parseInt(match[0]) : 3;
+    const baseItinerary = destination.itinerary;
+    const result = [];
+
+    for (let i = 1; i <= numDays; i++) {
+      if (baseItinerary[i - 1]) {
+        result.push(baseItinerary[i - 1]);
+      } else {
+        result.push(`Day ${i}: Exploration of hidden trails, local photography, and eco-sightseeing at ${destination.name}.`);
+      }
+    }
+    return result;
+  };
+
+  // Smart Chat Message Handler
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
@@ -258,7 +275,8 @@ function App() {
   // Download Itinerary as Text File
   const downloadItinerary = () => {
     const activeDest = hubData[formData.hub] || hubData['Delhi'];
-    const content = `=================================\n AROVIA - SMART TRAVEL ITINERARY\n=================================\nDestination: ${activeDest.name}\nStarting Hub: ${formData.hub} (${activeDest.distanceInfo})\nTime Allocated: ${formData.time}\nEstimated Budget: ${formData.budget}\nWeather Forecast: ${activeDest.weather}\nLocal Food Specialty: ${activeDest.food}\nEco-Sustainability Score: ${activeDest.ecoScore} (${activeDest.carbonSaved})\n\nDAY-WISE PLAN:\n${activeDest.itinerary.join('\n')}\n\nEMERGENCY & SAFETY:\nNearest Hospital: ${activeDest.hospitalName}\nHelpline: ${activeDest.emergencyContact}\n\nDeveloped by Team Tournex\nArovia Platform`;
+    const currentItinerary = getDynamicItinerary(activeDest);
+    const content = `=================================\n AROVIA - SMART TRAVEL ITINERARY\n=================================\nDestination: ${activeDest.name}\nStarting Hub: ${formData.hub} (${activeDest.distanceInfo})\nTime Allocated: ${formData.time}\nEstimated Budget: ${formData.budget}\nWeather Forecast: ${activeDest.weather}\nLocal Food Specialty: ${activeDest.food}\nEco-Sustainability Score: ${activeDest.ecoScore} (${activeDest.carbonSaved})\n\nDAY-WISE PLAN:\n${currentItinerary.join('\n')}\n\nEMERGENCY & SAFETY:\nNearest Hospital: ${activeDest.hospitalName}\nHelpline: ${activeDest.emergencyContact}\n\nDeveloped by Team Tournex\nArovia Platform`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -271,7 +289,7 @@ function App() {
   // Share on WhatsApp
   const shareOnWhatsApp = () => {
     const activeDest = hubData[formData.hub] || hubData['Delhi'];
-    const text = encodeURIComponent(`🚀 Check out my Arovia Smart Travel Plan for *${activeDest.name}* starting from ${formData.hub}!\n\n📍 ${activeDest.distanceInfo}\n🌤️ Weather: ${activeDest.weather}\n🌿 Eco-Impact: ${activeDest.carbonSaved}\n\nGenerated via Arovia Platform.`);
+    const text = encodeURIComponent(`🚀 Check out my Arovia Smart Travel Plan for *${activeDest.name}* starting from ${formData.hub} (${formData.time})!\n\n📍 ${activeDest.distanceInfo}\n🌤️ Weather: ${activeDest.weather}\n🌿 Eco-Impact: ${activeDest.carbonSaved}\n\nGenerated via Arovia Platform.`);
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
 
@@ -329,6 +347,7 @@ function App() {
   }, [submitted, formData.hub]);
 
   const activeDestination = hubData[formData.hub] || hubData['Delhi'];
+  const currentItinerary = getDynamicItinerary(activeDestination);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white flex flex-col items-center justify-between p-6 relative">
@@ -367,7 +386,7 @@ function App() {
             {/* Time & Budget Row */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Time Constraint</label>
+                <label className="block text-sm font-medium text-slate-300 mb-1.5">Time Constraint (e.g. 3 Days)</label>
                 <input 
                   type="text" 
                   name="time" 
@@ -442,7 +461,7 @@ function App() {
               <div>
                 <h2 className="text-lg font-bold text-cyan-400">{activeDestination.name}</h2>
                 <p className="text-xs text-slate-300 mt-1">{activeDestination.desc}</p>
-                <p className="text-[11px] text-amber-300 mt-1 font-mono">📍 {activeDestination.distanceInfo}</p>
+                <p className="text-[11px] text-amber-300 mt-1 font-mono">📍 {activeDestination.distanceInfo} | ⏱️ {formData.time}</p>
               </div>
               <div className="flex flex-col items-end gap-1">
                 <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-semibold border border-green-500/30 whitespace-nowrap">
@@ -530,11 +549,11 @@ function App() {
               </div>
             </div>
 
-            {/* Day-Wise Itinerary Section */}
+            {/* Dynamic Day-Wise Itinerary Section */}
             <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-700 space-y-2">
-              <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Smart AI Itinerary Plan</h3>
+              <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Smart AI Itinerary Plan ({formData.time})</h3>
               <ul className="space-y-1.5 text-xs text-slate-300">
-                {activeDestination.itinerary.map((item, index) => (
+                {currentItinerary.map((item, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <span className="text-cyan-400 font-bold">•</span>
                     <span>{item}</span>
