@@ -189,6 +189,9 @@ function App() {
   const [submitted, setSubmitted] = useState(false);
   const [checkedItems, setCheckedItems] = useState({});
   
+  // Map Expand / Minimize State
+  const [isMapExpanded, setIsMapExpanded] = useState(false);
+
   // Chatbot State
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState('');
@@ -209,6 +212,7 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setCheckedItems({});
+    setIsMapExpanded(false);
     setSubmitted(true);
   };
 
@@ -216,7 +220,7 @@ function App() {
     setCheckedItems(prev => ({ ...prev, [item]: !prev[item] }));
   };
 
-  // Upgraded Smart Chat Message Handler
+  // Smart Chat Message Handler
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
@@ -271,7 +275,7 @@ function App() {
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
 
-  // Leaflet Map Initialization with Auto-Fitting Bounds for All Nearby Markers
+  // Leaflet Map Initialization with Auto-Fitting Bounds
   useEffect(() => {
     if (submitted && mapRef.current) {
       const currentDest = hubData[formData.hub] || hubData['Delhi'];
@@ -310,7 +314,6 @@ function App() {
         markerCoordinates.push(spot.coords);
       });
 
-      // Automatically fit map bounds to encompass all markers nicely
       const bounds = L.latLngBounds(markerCoordinates);
       map.fitBounds(bounds, { padding: [40, 40] });
 
@@ -324,6 +327,15 @@ function App() {
       }
     };
   }, [submitted, formData.hub]);
+
+  // Fix Leaflet map sizing when max/min is toggled
+  useEffect(() => {
+    if (mapInstanceRef.current) {
+      setTimeout(() => {
+        mapInstanceRef.current.invalidateSize();
+      }, 300);
+    }
+  }, [isMapExpanded]);
 
   const activeDestination = hubData[formData.hub] || hubData['Delhi'];
 
@@ -477,13 +489,24 @@ function App() {
               </div>
             </div>
 
-            {/* Interactive Map Box with Multi-Markers & Auto-Fit Bounds */}
+            {/* Interactive Map Header with Maximize / Minimize Toggle Button */}
+            <div className="flex justify-between items-center pt-2">
+              <span className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Live Intelligence Routing Map 🗺️</span>
+              <button 
+                onClick={() => setIsMapExpanded(!isMapExpanded)}
+                className="text-xs bg-slate-900 hover:bg-slate-700 text-cyan-400 border border-slate-700 px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5 shadow"
+              >
+                {isMapExpanded ? '🗗 Minimize Map' : '⤢ Maximize Map'}
+              </button>
+            </div>
+
+            {/* Interactive Map Box with Dynamic Height Transition */}
             <div 
               ref={mapRef} 
-              className="w-full h-64 rounded-xl border border-slate-700 z-10 shadow-inner"
+              className={`w-full ${isMapExpanded ? 'h-[480px]' : 'h-64'} transition-all duration-300 rounded-xl border border-slate-700 z-10 shadow-inner`}
             ></div>
             <p className="text-[10px] text-slate-400 text-center italic">
-              ℹ️ Map auto-fits to show multiple surrounding offbeat pins & hospital. Click any pin for details!
+              ℹ️ Map displays multiple surrounding offbeat pins & hospital. Click maximize for a detailed view!
             </p>
 
             {/* SOS Emergency Alert Button */}
