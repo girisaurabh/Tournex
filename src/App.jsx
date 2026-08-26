@@ -275,7 +275,7 @@ function App() {
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
 
-  // Leaflet Map Initialization with Auto-Fitting Bounds
+  // Leaflet Map Initialization with Auto-Fitting Bounds & Tile Loading Fix
   useEffect(() => {
     if (submitted && mapRef.current) {
       const currentDest = hubData[formData.hub] || hubData['Delhi'];
@@ -287,7 +287,7 @@ function App() {
 
       const map = L.map(mapRef.current);
       
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; Arovia Intelligence Routing'
       }).addTo(map);
 
@@ -317,6 +317,11 @@ function App() {
       const bounds = L.latLngBounds(markerCoordinates);
       map.fitBounds(bounds, { padding: [40, 40] });
 
+      // Ensure tiles load correctly immediately
+      tileLayer.on('load', () => {
+        map.invalidateSize();
+      });
+
       mapInstanceRef.current = map;
     }
 
@@ -328,12 +333,21 @@ function App() {
     };
   }, [submitted, formData.hub]);
 
-  // Fix Leaflet map sizing when max/min is toggled
+  // Robust Tile Invalidation when Map size toggles (Maximize/Minimize)
   useEffect(() => {
     if (mapInstanceRef.current) {
+      const currentDest = hubData[formData.hub] || hubData['Delhi'];
+      const markerCoordinates = [
+        currentDest.coords,
+        currentDest.hospital,
+        ...currentDest.nearbySpots.map(s => s.coords)
+      ];
+      
       setTimeout(() => {
-        mapInstanceRef.current.invalidateSize();
-      }, 300);
+        mapInstanceRef.current.invalidateSize(true);
+        const bounds = L.latLngBounds(markerCoordinates);
+        mapInstanceRef.current.fitBounds(bounds, { padding: [40, 40] });
+      }, 250);
     }
   }, [isMapExpanded]);
 
@@ -503,7 +517,7 @@ function App() {
             {/* Interactive Map Box with Dynamic Height Transition */}
             <div 
               ref={mapRef} 
-              className={`w-full ${isMapExpanded ? 'h-[480px]' : 'h-64'} transition-all duration-300 rounded-xl border border-slate-700 z-10 shadow-inner`}
+              className={`w-full ${isMapExpanded ? 'h-[500px]' : 'h-64'} transition-all duration-300 rounded-xl border border-slate-700 z-10 shadow-inner`}
             ></div>
             <p className="text-[10px] text-slate-400 text-center italic">
               ℹ️ Map displays multiple surrounding offbeat pins & hospital. Click maximize for a detailed view!
