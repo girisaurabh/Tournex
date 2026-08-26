@@ -193,7 +193,7 @@ function App() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState('');
   const [messages, setMessages] = useState([
-    { sender: 'ai', text: 'Hello! I am your Arovia AI Assistant. Ask me anything about safety, timing, or local tips for your trip!' }
+    { sender: 'ai', text: 'Hello! I am your Arovia AI Assistant. Ask me about weather, safety, food, or budget for your trip!' }
   ]);
 
   // SOS Modal State
@@ -216,7 +216,7 @@ function App() {
     setCheckedItems(prev => ({ ...prev, [item]: !prev[item] }));
   };
 
-  // Chat message handler
+  // Upgraded Smart Chat Message Handler
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
@@ -228,15 +228,23 @@ function App() {
 
     setTimeout(() => {
       const activeDest = hubData[formData.hub] || hubData['Delhi'];
-      let reply = `That's a great question regarding ${activeDest.name}! Our AI crowd-routing engine ensures you have a peaceful and safe experience.`;
-      
       const lower = userText.toLowerCase();
-      if (lower.includes('safe') || lower.includes('safety') || lower.includes('danger')) {
+      let reply = `That's a fantastic query regarding ${activeDest.name}! Our AI routing engine suggests following the recommended day-wise itinerary for the best offbeat experience.`;
+
+      if (lower.includes('hi') || lower.includes('hello') || lower.includes('hey')) {
+        reply = `Hello! I'm your Arovia AI guide. You are exploring ${activeDest.name} starting from ${formData.hub}. Ask me about weather, food, safety, or budget!`;
+      } else if (lower.includes('safe') || lower.includes('safety') || lower.includes('danger') || lower.includes('police')) {
         reply = activeDest.chatResponses.safe;
-      } else if (lower.includes('time') || lower.includes('season') || lower.includes('month') || lower.includes('when')) {
+      } else if (lower.includes('time') || lower.includes('season') || lower.includes('month') || lower.includes('when') || lower.includes('best')) {
         reply = activeDest.chatResponses.bestTime;
-      } else if (lower.includes('food') || lower.includes('eat') || lower.includes('dish')) {
-        reply = activeDest.chatResponses.food;
+      } else if (lower.includes('food') || lower.includes('eat') || lower.includes('dish') || lower.includes('restaurant') || lower.includes('taste')) {
+        reply = `Must-try local delicacy in ${activeDest.name}: ${activeDest.food}!`;
+      } else if (lower.includes('budget') || lower.includes('cost') || lower.includes('money') || lower.includes('price') || lower.includes('expense')) {
+        reply = `Your total budget is set to ${formData.budget}. Estimated split: Stay (${activeDest.budgetSplit.stay}%), Transport (${activeDest.budgetSplit.transport}%), Food (${activeDest.budgetSplit.food}%), Reserve (${activeDest.budgetSplit.reserve}%).`;
+      } else if (lower.includes('weather') || lower.includes('temp') || lower.includes('climate') || lower.includes('rain')) {
+        reply = `Current weather forecast for ${activeDest.name}: ${activeDest.weather}.`;
+      } else if (lower.includes('hospital') || lower.includes('emergency') || lower.includes('help')) {
+        reply = `Nearest emergency healthcare is ${activeDest.hospitalName}. Helpline: ${activeDest.emergencyContact}.`;
       }
 
       setMessages(prev => [...prev, { sender: 'ai', text: reply }]);
@@ -475,7 +483,7 @@ function App() {
               className="w-full h-64 rounded-xl border border-slate-700 z-10 shadow-inner"
             ></div>
             <p className="text-[10px] text-slate-400 text-center italic">
-              ℹ️ Map auto-fits to show multiple surrounding offbeat pins (Sariska, Siliserh, Bala Quila) & hospital. Click any pin!
+              ℹ️ Map auto-fits to show multiple surrounding offbeat pins & hospital. Click any pin for details!
             </p>
 
             {/* SOS Emergency Alert Button */}
@@ -651,7 +659,7 @@ function App() {
             <form onSubmit={handleSendMessage} className="p-2.5 bg-slate-800 border-t border-slate-700 flex gap-2">
               <input 
                 type="text" 
-                placeholder="Ask about safety, food, timing..." 
+                placeholder="Ask about budget, weather, safety..." 
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
