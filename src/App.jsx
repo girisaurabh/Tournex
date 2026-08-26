@@ -188,9 +188,6 @@ function App() {
 
   const [submitted, setSubmitted] = useState(false);
   const [checkedItems, setCheckedItems] = useState({});
-  
-  // Map Expand / Minimize State
-  const [isMapExpanded, setIsMapExpanded] = useState(false);
 
   // Chatbot State
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -212,7 +209,6 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setCheckedItems({});
-    setIsMapExpanded(false);
     setSubmitted(true);
   };
 
@@ -258,7 +254,7 @@ function App() {
   // Download Itinerary as Text File
   const downloadItinerary = () => {
     const activeDest = hubData[formData.hub] || hubData['Delhi'];
-    const content = `=================================\n AROVIA - SMART TRAVEL ITINERARY\n=================================\nDestination: ${activeDest.name}\nStarting Hub: ${formData.hub} (${activeDest.distanceInfo})\nTime Allocated: ${formData.time}\nEstimated Budget: ${formData.budget}\nWeather Forecast: ${activeDest.weather}\nLocal Food Specialty: ${activeDest.food}\nEco-Sustainability Score: ${activeDest.ecoScore}\n\nDAY-WISE PLAN:\n${activeDest.itinerary.join('\n')}\n\nEMERGENCY & SAFETY:\nNearest Hospital: ${activeDest.hospitalName}\nHelpline: ${activeDest.emergencyContact}\n\nDeveloped by Team Arovia\nArovia Platform`;
+    const content = `=================================\n AROVIA - SMART TRAVEL ITINERARY\n=================================\nDestination: ${activeDest.name}\nStarting Hub: ${formData.hub} (${activeDest.distanceInfo})\nTime Allocated: ${formData.time}\nEstimated Budget: ${formData.budget}\nWeather Forecast: ${activeDest.weather}\nLocal Food Specialty: ${activeDest.food}\nEco-Sustainability Score: ${activeDest.ecoScore}\n\nDAY-WISE PLAN:\n${activeDest.itinerary.join('\n')}\n\nEMERGENCY & SAFETY:\nNearest Hospital: ${activeDest.hospitalName}\nHelpline: ${activeDest.emergencyContact}\n\nDeveloped by Team Tournex\nArovia Platform`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -275,7 +271,7 @@ function App() {
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
 
-  // Leaflet Map Initialization with Auto-Fitting Bounds & Tile Loading Fix
+  // Leaflet Map Initialization with Auto-Fitting Bounds
   useEffect(() => {
     if (submitted && mapRef.current) {
       const currentDest = hubData[formData.hub] || hubData['Delhi'];
@@ -287,7 +283,7 @@ function App() {
 
       const map = L.map(mapRef.current);
       
-      const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; Arovia Intelligence Routing'
       }).addTo(map);
 
@@ -317,11 +313,6 @@ function App() {
       const bounds = L.latLngBounds(markerCoordinates);
       map.fitBounds(bounds, { padding: [40, 40] });
 
-      // Ensure tiles load correctly immediately
-      tileLayer.on('load', () => {
-        map.invalidateSize();
-      });
-
       mapInstanceRef.current = map;
     }
 
@@ -332,24 +323,6 @@ function App() {
       }
     };
   }, [submitted, formData.hub]);
-
-  // Robust Tile Invalidation when Map size toggles (Maximize/Minimize)
-  useEffect(() => {
-    if (mapInstanceRef.current) {
-      const currentDest = hubData[formData.hub] || hubData['Delhi'];
-      const markerCoordinates = [
-        currentDest.coords,
-        currentDest.hospital,
-        ...currentDest.nearbySpots.map(s => s.coords)
-      ];
-      
-      setTimeout(() => {
-        mapInstanceRef.current.invalidateSize(true);
-        const bounds = L.latLngBounds(markerCoordinates);
-        mapInstanceRef.current.fitBounds(bounds, { padding: [40, 40] });
-      }, 250);
-    }
-  }, [isMapExpanded]);
 
   const activeDestination = hubData[formData.hub] || hubData['Delhi'];
 
@@ -503,24 +476,18 @@ function App() {
               </div>
             </div>
 
-            {/* Interactive Map Header with Maximize / Minimize Toggle Button */}
-            <div className="flex justify-between items-center pt-2">
+            {/* Interactive Map Header */}
+            <div className="pt-2">
               <span className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Live Intelligence Routing Map 🗺️</span>
-              <button 
-                onClick={() => setIsMapExpanded(!isMapExpanded)}
-                className="text-xs bg-slate-900 hover:bg-slate-700 text-cyan-400 border border-slate-700 px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5 shadow"
-              >
-                {isMapExpanded ? '🗗 Minimize Map' : '⤢ Maximize Map'}
-              </button>
             </div>
 
-            {/* Interactive Map Box with Dynamic Height Transition */}
+            {/* Stable Interactive Map Box */}
             <div 
               ref={mapRef} 
-              className={`w-full ${isMapExpanded ? 'h-[500px]' : 'h-64'} transition-all duration-300 rounded-xl border border-slate-700 z-10 shadow-inner`}
+              className="w-full h-80 rounded-xl border border-slate-700 z-10 shadow-inner"
             ></div>
             <p className="text-[10px] text-slate-400 text-center italic">
-              ℹ️ Map displays multiple surrounding offbeat pins & hospital. Click maximize for a detailed view!
+              ℹ️ Map displays multiple surrounding offbeat pins & emergency care stations clearly. Click any marker!
             </p>
 
             {/* SOS Emergency Alert Button */}
@@ -714,7 +681,7 @@ function App() {
 
       {/* Footer / Team Credits */}
       <footer className="text-center text-xs text-slate-500 pb-2">
-        Developed by <span className="text-slate-400 font-medium">Team Arovia</span>
+        Developed by <span className="text-slate-400 font-medium">Team Tournex</span>
       </footer>
 
     </div>
