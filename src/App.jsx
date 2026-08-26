@@ -13,7 +13,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-// Hub-wise data upgraded with surrounding nearby offbeat spots & distance metrics
+// Hub-wise data upgraded with surrounding nearby offbeat spots & carbon offset metrics
 const hubData = {
   Delhi: {
     name: 'Alwar (Offbeat Heritage & Nature)',
@@ -26,6 +26,7 @@ const hubData = {
     weather: '24°C, Pleasant & Breezy',
     food: 'Alwar Ka Mawa & Dal Baati Churma',
     ecoScore: '96% Eco-Friendly (Low Carbon Impact)',
+    carbonSaved: '14.2 kg CO₂ Saved',
     budgetSplit: { stay: 45, transport: 25, food: 20, reserve: 10 },
     packingList: ['Trekking Shoes 🥾', 'Reusable Water Bottle 💧', 'Binoculars for Safari 🔭', 'Light Jacket 🧥'],
     scenicSpots: [
@@ -66,6 +67,7 @@ const hubData = {
     weather: '22°C, Mist & Cool Winds',
     food: 'Chikki, Vada Pav & Local Thali',
     ecoScore: '99% Zero-Emission Zone (No Vehicles)',
+    carbonSaved: '18.5 kg CO₂ Saved',
     budgetSplit: { stay: 50, transport: 20, food: 20, reserve: 10 },
     packingList: ['Comfortable Walking Shoes 👟', 'Rain Poncho / Umbrella ☔', 'Eco-friendly Snack Box 🍫', 'Cap / Sunglasses 🕶️'],
     scenicSpots: [
@@ -106,6 +108,7 @@ const hubData = {
     weather: '29°C, Clear Skies & Sunny',
     food: 'Mirchi Bada & Traditional Ghevar',
     ecoScore: '92% Desert Conservation Hub',
+    carbonSaved: '11.0 kg CO₂ Saved',
     budgetSplit: { stay: 40, transport: 35, food: 15, reserve: 10 },
     packingList: ['Sunglasses (High Glare) 🕶️', 'Camera with Tripod 📷', 'Sunscreen & Hat 🧢', 'Electrolyte Drinks 🥤'],
     scenicSpots: [
@@ -146,6 +149,7 @@ const hubData = {
     weather: '20°C, Misty & Refreshing',
     food: 'Bisi Bele Bath & Filter Coffee',
     ecoScore: '95% Hillside Protected Zone',
+    carbonSaved: '12.8 kg CO₂ Saved',
     budgetSplit: { stay: 35, transport: 30, food: 25, reserve: 10 },
     packingList: ['Windcheater / Woolen 🧣', 'Action Camera / Phone Mount 📱', 'Snacks for Early Trek 🥪', 'First Aid Kit 🩹'],
     scenicSpots: [
@@ -188,9 +192,6 @@ function App() {
 
   const [submitted, setSubmitted] = useState(false);
   const [checkedItems, setCheckedItems] = useState({});
-  
-  // Heatmap simulation state
-  const [isHeatmapActive, setIsHeatmapActive] = useState(false);
 
   // Chatbot State
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -212,7 +213,6 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setCheckedItems({});
-    setIsHeatmapActive(false);
     setSubmitted(true);
   };
 
@@ -258,7 +258,7 @@ function App() {
   // Download Itinerary as Text File
   const downloadItinerary = () => {
     const activeDest = hubData[formData.hub] || hubData['Delhi'];
-    const content = `=================================\n AROVIA - SMART TRAVEL ITINERARY\n=================================\nDestination: ${activeDest.name}\nStarting Hub: ${formData.hub} (${activeDest.distanceInfo})\nTime Allocated: ${formData.time}\nEstimated Budget: ${formData.budget}\nWeather Forecast: ${activeDest.weather}\nLocal Food Specialty: ${activeDest.food}\nEco-Sustainability Score: ${activeDest.ecoScore}\n\nDAY-WISE PLAN:\n${activeDest.itinerary.join('\n')}\n\nEMERGENCY & SAFETY:\nNearest Hospital: ${activeDest.hospitalName}\nHelpline: ${activeDest.emergencyContact}\n\nDeveloped by Team Tournex\nArovia Platform`;
+    const content = `=================================\n AROVIA - SMART TRAVEL ITINERARY\n=================================\nDestination: ${activeDest.name}\nStarting Hub: ${formData.hub} (${activeDest.distanceInfo})\nTime Allocated: ${formData.time}\nEstimated Budget: ${formData.budget}\nWeather Forecast: ${activeDest.weather}\nLocal Food Specialty: ${activeDest.food}\nEco-Sustainability Score: ${activeDest.ecoScore} (${activeDest.carbonSaved})\n\nDAY-WISE PLAN:\n${activeDest.itinerary.join('\n')}\n\nEMERGENCY & SAFETY:\nNearest Hospital: ${activeDest.hospitalName}\nHelpline: ${activeDest.emergencyContact}\n\nDeveloped by Team Tournex\nArovia Platform`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -271,11 +271,11 @@ function App() {
   // Share on WhatsApp
   const shareOnWhatsApp = () => {
     const activeDest = hubData[formData.hub] || hubData['Delhi'];
-    const text = encodeURIComponent(`🚀 Check out my Arovia Smart Travel Plan for *${activeDest.name}* starting from ${formData.hub}!\n\n📍 ${activeDest.distanceInfo}\n🌤️ Weather: ${activeDest.weather}\n🌿 Eco-Score: ${activeDest.ecoScore}\n\nGenerated via Arovia Platform.`);
+    const text = encodeURIComponent(`🚀 Check out my Arovia Smart Travel Plan for *${activeDest.name}* starting from ${formData.hub}!\n\n📍 ${activeDest.distanceInfo}\n🌤️ Weather: ${activeDest.weather}\n🌿 Eco-Impact: ${activeDest.carbonSaved}\n\nGenerated via Arovia Platform.`);
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
 
-  // Leaflet Map Initialization with Auto-Fitting Bounds & Heatmap Simulation Layer
+  // Leaflet Map Initialization with Auto-Fitting Bounds
   useEffect(() => {
     if (submitted && mapRef.current) {
       const currentDest = hubData[formData.hub] || hubData['Delhi'];
@@ -314,25 +314,6 @@ function App() {
         markerCoordinates.push(spot.coords);
       });
 
-      // Optional Simulated Crowd Heatmap Circles
-      if (isHeatmapActive) {
-        L.circle(currentDest.coords, {
-          color: 'orange',
-          fillColor: '#ffa500',
-          fillOpacity: 0.3,
-          radius: 4000
-        }).addTo(map).bindPopup('🔥 Moderate Crowd Zone Overlay');
-
-        currentDest.nearbySpots.forEach((spot) => {
-          L.circle(spot.coords, {
-            color: 'green',
-            fillColor: '#008000',
-            fillOpacity: 0.3,
-            radius: 3000
-          }).addTo(map).bindPopup('🌿 Safe & Low Crowd Offbeat Zone');
-        });
-      }
-
       const bounds = L.latLngBounds(markerCoordinates);
       map.fitBounds(bounds, { padding: [40, 40] });
 
@@ -345,7 +326,7 @@ function App() {
         mapInstanceRef.current = null;
       }
     };
-  }, [submitted, formData.hub, isHeatmapActive]);
+  }, [submitted, formData.hub]);
 
   const activeDestination = hubData[formData.hub] || hubData['Delhi'];
 
@@ -468,7 +449,7 @@ function App() {
                   {activeDestination.crowd}
                 </span>
                 <span className="text-[10px] text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">
-                  🌿 {activeDestination.ecoScore}
+                  🌿 {activeDestination.carbonSaved}
                 </span>
               </div>
             </div>
@@ -507,15 +488,9 @@ function App() {
               </div>
             </div>
 
-            {/* Interactive Map Header with Heatmap Toggle Button */}
-            <div className="flex justify-between items-center pt-2">
+            {/* Interactive Map Header */}
+            <div className="pt-2">
               <span className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Live Intelligence Routing Map 🗺️</span>
-              <button 
-                onClick={() => setIsHeatmapActive(!isHeatmapActive)}
-                className={`text-xs px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5 shadow border ${isHeatmapActive ? 'bg-amber-600 hover:bg-amber-500 text-white border-amber-500' : 'bg-slate-900 hover:bg-slate-700 text-amber-400 border-slate-700'}`}
-              >
-                <span>🔥</span> {isHeatmapActive ? 'Hide Heatmap' : 'Toggle Crowd Heatmap'}
-              </button>
             </div>
 
             {/* Stable Interactive Map Box */}
@@ -524,7 +499,7 @@ function App() {
               className="w-full h-80 rounded-xl border border-slate-700 z-10 shadow-inner"
             ></div>
             <p className="text-[10px] text-slate-400 text-center italic">
-              ℹ️ Map displays multiple surrounding offbeat pins & emergency care stations. Toggle heatmap to simulate live crowd density!
+              ℹ️ Map displays multiple surrounding offbeat pins & emergency care stations clearly. Click any marker!
             </p>
 
             {/* SOS Emergency Alert Button */}
