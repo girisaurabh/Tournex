@@ -188,6 +188,9 @@ function App() {
 
   const [submitted, setSubmitted] = useState(false);
   const [checkedItems, setCheckedItems] = useState({});
+  
+  // Heatmap simulation state
+  const [isHeatmapActive, setIsHeatmapActive] = useState(false);
 
   // Chatbot State
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -209,6 +212,7 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setCheckedItems({});
+    setIsHeatmapActive(false);
     setSubmitted(true);
   };
 
@@ -271,7 +275,7 @@ function App() {
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
 
-  // Leaflet Map Initialization with Auto-Fitting Bounds
+  // Leaflet Map Initialization with Auto-Fitting Bounds & Heatmap Simulation Layer
   useEffect(() => {
     if (submitted && mapRef.current) {
       const currentDest = hubData[formData.hub] || hubData['Delhi'];
@@ -310,6 +314,25 @@ function App() {
         markerCoordinates.push(spot.coords);
       });
 
+      // Optional Simulated Crowd Heatmap Circles
+      if (isHeatmapActive) {
+        L.circle(currentDest.coords, {
+          color: 'orange',
+          fillColor: '#ffa500',
+          fillOpacity: 0.3,
+          radius: 4000
+        }).addTo(map).bindPopup('🔥 Moderate Crowd Zone Overlay');
+
+        currentDest.nearbySpots.forEach((spot) => {
+          L.circle(spot.coords, {
+            color: 'green',
+            fillColor: '#008000',
+            fillOpacity: 0.3,
+            radius: 3000
+          }).addTo(map).bindPopup('🌿 Safe & Low Crowd Offbeat Zone');
+        });
+      }
+
       const bounds = L.latLngBounds(markerCoordinates);
       map.fitBounds(bounds, { padding: [40, 40] });
 
@@ -322,7 +345,7 @@ function App() {
         mapInstanceRef.current = null;
       }
     };
-  }, [submitted, formData.hub]);
+  }, [submitted, formData.hub, isHeatmapActive]);
 
   const activeDestination = hubData[formData.hub] || hubData['Delhi'];
 
@@ -426,6 +449,14 @@ function App() {
         ) : (
           /* Result & Interactive Map Screen */
           <div className="space-y-5">
+            
+            {/* SIH 2026 Alignment Badge */}
+            <div className="bg-indigo-950/60 border border-indigo-700/50 p-2.5 rounded-xl text-center">
+              <span className="text-[11px] font-semibold text-indigo-300 tracking-wide uppercase">
+                🏆 Smart India Hackathon 2026 | Sustainable Tourism & Tourist Safety Platform
+              </span>
+            </div>
+
             <div className="flex justify-between items-center bg-cyan-950/40 border border-cyan-800 p-4 rounded-xl">
               <div>
                 <h2 className="text-lg font-bold text-cyan-400">{activeDestination.name}</h2>
@@ -476,9 +507,15 @@ function App() {
               </div>
             </div>
 
-            {/* Interactive Map Header */}
-            <div className="pt-2">
+            {/* Interactive Map Header with Heatmap Toggle Button */}
+            <div className="flex justify-between items-center pt-2">
               <span className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Live Intelligence Routing Map 🗺️</span>
+              <button 
+                onClick={() => setIsHeatmapActive(!isHeatmapActive)}
+                className={`text-xs px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5 shadow border ${isHeatmapActive ? 'bg-amber-600 hover:bg-amber-500 text-white border-amber-500' : 'bg-slate-900 hover:bg-slate-700 text-amber-400 border-slate-700'}`}
+              >
+                <span>🔥</span> {isHeatmapActive ? 'Hide Heatmap' : 'Toggle Crowd Heatmap'}
+              </button>
             </div>
 
             {/* Stable Interactive Map Box */}
@@ -487,7 +524,7 @@ function App() {
               className="w-full h-80 rounded-xl border border-slate-700 z-10 shadow-inner"
             ></div>
             <p className="text-[10px] text-slate-400 text-center italic">
-              ℹ️ Map displays multiple surrounding offbeat pins & emergency care stations clearly. Click any marker!
+              ℹ️ Map displays multiple surrounding offbeat pins & emergency care stations. Toggle heatmap to simulate live crowd density!
             </p>
 
             {/* SOS Emergency Alert Button */}
