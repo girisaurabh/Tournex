@@ -169,7 +169,7 @@ function App() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState('');
   const [messages, setMessages] = useState([
-    { sender: 'ai', text: 'Hello! I am your Tournex AI Assistant. Ask me anything about safety, timing, or local tips for your trip!' }
+    { sender: 'ai', text: 'Hello! I am your Arovia AI Assistant. Ask me anything about safety, timing, or local tips for your trip!' }
   ]);
 
   // SOS Modal State
@@ -222,13 +222,13 @@ function App() {
   // Download Itinerary as Text File
   const downloadItinerary = () => {
     const activeDest = hubData[formData.hub] || hubData['Delhi'];
-    const content = `=================================\n TOURNEX - SMART TRAVEL ITINERARY\n=================================\nDestination: ${activeDest.name}\nStarting Hub: ${formData.hub}\nTime Allocated: ${formData.time}\nEstimated Budget: ${formData.budget}\nWeather Forecast: ${activeDest.weather}\nLocal Food Specialty: ${activeDest.food}\nEco-Sustainability Score: ${activeDest.ecoScore}\n\nDAY-WISE PLAN:\n${activeDest.itinerary.join('\n')}\n\nEMERGENCY & SAFETY:\nNearest Hospital: ${activeDest.hospitalName}\nHelpline: ${activeDest.emergencyContact}\n\nDeveloped by Saurabh Giri\nTournex Platform`;
+    const content = `=================================\n AROVIA - SMART TRAVEL ITINERARY\n=================================\nDestination: ${activeDest.name}\nStarting Hub: ${formData.hub}\nTime Allocated: ${formData.time}\nEstimated Budget: ${formData.budget}\nWeather Forecast: ${activeDest.weather}\nLocal Food Specialty: ${activeDest.food}\nEco-Sustainability Score: ${activeDest.ecoScore}\n\nDAY-WISE PLAN:\n${activeDest.itinerary.join('\n')}\n\nEMERGENCY & SAFETY:\nNearest Hospital: ${activeDest.hospitalName}\nHelpline: ${activeDest.emergencyContact}\n\nDeveloped by Team Arovia\nArovia Platform`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Tournex_${formData.hub}_Itinerary.txt`;
+    a.download = `Arovia_${formData.hub}_Itinerary.txt`;
     a.click();
   };
 
@@ -244,7 +244,7 @@ function App() {
       const map = L.map(mapRef.current).setView(currentDest.coords, 11);
       
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; Tournex Intelligence Routing'
+        attribution: '&copy; Arovia Intelligence Routing'
       }).addTo(map);
 
       L.marker(currentDest.coords).addTo(map)
@@ -277,10 +277,10 @@ function App() {
       {/* Header */}
       <div className="text-center mt-4">
         <h1 className="text-4xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-          TOURNEX
+          AROVIA
         </h1>
         <p className="text-slate-400 mt-1 text-xs italic">
-          "Tournex - Where memories meet your next journey"
+          "Arovia - Where memories meet your next journey"
         </p>
       </div>
 
@@ -568,7 +568,7 @@ function App() {
             <div className="bg-slate-800 p-3 flex justify-between items-center border-b border-slate-700">
               <div className="flex items-center gap-2">
                 <span className="text-base">🤖</span>
-                <span className="text-xs font-bold text-cyan-400">Tournex AI Guide</span>
+                <span className="text-xs font-bold text-cyan-400">Arovia AI Guide</span>
               </div>
               <button 
                 onClick={() => setIsChatOpen(false)}
@@ -611,7 +611,7 @@ function App() {
 
       {/* Footer / Team Credits */}
       <footer className="text-center text-xs text-slate-500 pb-2">
-        Developed by <span className="text-slate-400 font-medium">Saurabh Giri</span> | Tournex Platform
+        Developed by <span className="text-slate-400 font-medium">Team Arovia</span>
       </footer>
 
     </div>
