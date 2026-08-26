@@ -220,7 +220,7 @@ function App() {
     setCheckedItems(prev => ({ ...prev, [item]: !prev[item] }));
   };
 
-  // Smart Chat Message Handler
+  // Fixed Smart Chat Message Handler (Strict Weather & Food Separation)
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
@@ -239,14 +239,14 @@ function App() {
         reply = `Hello! I'm your Arovia AI guide. You are exploring ${activeDest.name} starting from ${formData.hub}. Ask me about weather, food, safety, or budget!`;
       } else if (lower.includes('safe') || lower.includes('safety') || lower.includes('danger') || lower.includes('police')) {
         reply = activeDest.chatResponses.safe;
+      } else if (lower.includes('weather') || lower.includes('temp') || lower.includes('climate') || lower.includes('rain') || lower.includes('mausam')) {
+        reply = `Current weather forecast for ${activeDest.name}: ${activeDest.weather}.`;
+      } else if (lower.includes('food') || lower.includes('eat') || lower.includes('dish') || lower.includes('restaurant') || lower.includes('taste') || lower.includes('khana')) {
+        reply = `Must-try local delicacy in ${activeDest.name}: ${activeDest.food}!`;
       } else if (lower.includes('time') || lower.includes('season') || lower.includes('month') || lower.includes('when') || lower.includes('best')) {
         reply = activeDest.chatResponses.bestTime;
-      } else if (lower.includes('food') || lower.includes('eat') || lower.includes('dish') || lower.includes('restaurant') || lower.includes('taste')) {
-        reply = `Must-try local delicacy in ${activeDest.name}: ${activeDest.food}!`;
       } else if (lower.includes('budget') || lower.includes('cost') || lower.includes('money') || lower.includes('price') || lower.includes('expense')) {
         reply = `Your total budget is set to ${formData.budget}. Estimated split: Stay (${activeDest.budgetSplit.stay}%), Transport (${activeDest.budgetSplit.transport}%), Food (${activeDest.budgetSplit.food}%), Reserve (${activeDest.budgetSplit.reserve}%).`;
-      } else if (lower.includes('weather') || lower.includes('temp') || lower.includes('climate') || lower.includes('rain')) {
-        reply = `Current weather forecast for ${activeDest.name}: ${activeDest.weather}.`;
       } else if (lower.includes('hospital') || lower.includes('emergency') || lower.includes('help')) {
         reply = `Nearest emergency healthcare is ${activeDest.hospitalName}. Helpline: ${activeDest.emergencyContact}.`;
       }
@@ -671,7 +671,7 @@ function App() {
               ))}
             </div>
 
-            {/* Chat Input Form */}
+            (Chat Input Form)
             <form onSubmit={handleSendMessage} className="p-2.5 bg-slate-800 border-t border-slate-700 flex gap-2">
               <input 
                 type="text" 
