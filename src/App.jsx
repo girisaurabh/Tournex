@@ -47,7 +47,9 @@ const hubData = {
     itinerary: [
       'Day 1: Arrival & Check-in at Eco-Lodge, Evening walk at Siliserh Lake.',
       'Day 2: Morning wildlife safari at Sariska Tiger Reserve, Evening fort exploration.',
-      'Day 3: Local heritage shopping & return journey to Delhi.'
+      'Day 3: Local heritage shopping & return journey to Delhi.',
+      'Day 4: Sunrise trek to nearby heritage hills and local artisan workshop visit.',
+      'Day 5: Eco-village interaction, traditional lunch, and final departure.'
     ],
     emergencyContact: '+91-144-2330011 (Alwar Helpline)',
     chatResponses: {
@@ -88,7 +90,9 @@ const hubData = {
     itinerary: [
       'Day 1: Toy train ride/trek up, sunset view at Panorama Point.',
       'Day 2: Echo Point exploration and horse riding through green trails.',
-      'Day 3: Charlotte Lake relaxation & checkout.'
+      'Day 3: Charlotte Lake relaxation & checkout.',
+      'Day 4: Deep forest nature walk towards Garbut Point and photography.',
+      'Day 5: Souvenir shopping at Central Bazaar and peaceful departure.'
     ],
     emergencyContact: '+91-2148-230222 (Matheran Help Desk)',
     chatResponses: {
@@ -129,7 +133,9 @@ const hubData = {
     itinerary: [
       'Day 1: Arrival near salt flats, sunset reflection photography.',
       'Day 2: Migratory bird watching (Shakambari Mata temple trail).',
-      'Day 3: Local handicraft tour & return.'
+      'Day 3: Local handicraft tour & return.',
+      'Day 4: Exploring Devyani Kund and vintage salt heritage railway yard.',
+      'Day 5: Desert sunrise view and traditional Rajasthani feast.'
     ],
     emergencyContact: '+91-1421-222111 (Sambhar Emergency)',
     chatResponses: {
@@ -170,7 +176,9 @@ const hubData = {
     itinerary: [
       'Day 1: Early morning sunrise view, Tipu’s Drop exploration.',
       'Day 2: Cycling through winding green tracks & Bhoga Nandeeshwara Temple.',
-      'Day 3: Local vineyard visit & return.'
+      'Day 3: Local vineyard visit & return.',
+      'Day 4: Skandagiri base exploration and local pottery village tour.',
+      'Day 5: Peaceful hillside meditation and return journey.'
     ],
     emergencyContact: '+91-8156-263222 (Chickballapur Police)',
     chatResponses: {
@@ -220,7 +228,7 @@ function App() {
     setCheckedItems(prev => ({ ...prev, [item]: !prev[item] }));
   };
 
-  // Helper to dynamically calculate itinerary days based on input time
+  // Helper to dynamically calculate itinerary days based on selected dropdown time
   const getDynamicItinerary = (destination) => {
     const match = formData.time.match(/\d+/);
     const numDays = match ? parseInt(match[0]) : 3;
@@ -383,17 +391,22 @@ function App() {
               </select>
             </div>
 
-            {/* Time & Budget Row */}
+            {/* Time Constraint (Dropdown) & Budget Row */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Time Constraint (e.g. 3 Days)</label>
-                <input 
-                  type="text" 
+                <label className="block text-sm font-medium text-slate-300 mb-1.5">Time Constraint (Duration)</label>
+                <select 
                   name="time" 
                   value={formData.time} 
                   onChange={handleChange}
                   className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-cyan-400"
-                />
+                >
+                  <option value="1 Day">1 Day</option>
+                  <option value="2 Days">2 Days</option>
+                  <option value="3 Days">3 Days</option>
+                  <option value="4 Days">4 Days</option>
+                  <option value="5 Days">5 Days</option>
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-1.5">Budget</label>
