@@ -520,9 +520,9 @@ function App() {
               </div>
             </div>
 
-            {/* Interactive Map Header */}
+            {/* Map Header Updated */}
             <div className="pt-2">
-              <span className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Live Intelligence Routing Map 🗺️</span>
+              <span className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Smart Routing & Destination Map 🗺️</span>
             </div>
 
             {/* Stable Interactive Map Box */}
