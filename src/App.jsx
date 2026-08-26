@@ -13,11 +13,12 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-// Comprehensive Hub-wise data with scenic photo preview cards
+// Hub-wise data upgraded with surrounding nearby offbeat spots & distance metrics
 const hubData = {
   Delhi: {
     name: 'Alwar (Offbeat Heritage & Nature)',
     coords: [27.5530, 76.6346],
+    distanceInfo: '🚗 ~122 km from Delhi (2.5 hrs via NH 48)',
     hospital: [27.5700, 76.6100],
     hospitalName: 'General Hospital Alwar (2.4 km)',
     crowd: 'Low Density (Safe)',
@@ -31,6 +32,12 @@ const hubData = {
       { title: 'Sariska Tiger Reserve', tag: 'Wildlife Safari' },
       { title: 'Siliserh Lake Palace', tag: 'Scenic Water View' },
       { title: 'Bala Quila Fort', tag: 'Ancient Architecture' }
+    ],
+    // Surrounding map markers
+    nearbySpots: [
+      { name: 'Sariska Tiger Reserve', coords: [27.3200, 76.4400], desc: 'Famous wildlife sanctuary & tiger habitat' },
+      { name: 'Siliserh Lake Palace', coords: [27.5100, 76.5800], desc: 'Royal lakeside palace & boating point' },
+      { name: 'Bala Quila Fort', coords: [27.5700, 76.6000], desc: 'Historic hilltop fort overlooking Alwar city' }
     ],
     phrasebook: [
       { english: 'Welcome / Greetings', local: 'Khamma Ghani 🙏' },
@@ -52,6 +59,7 @@ const hubData = {
   Mumbai: {
     name: 'Matheran (Eco-Sensitive Hill Station)',
     coords: [18.9863, 73.3670],
+    distanceInfo: '🚆 ~83 km from Mumbai (2 hrs via Eastern Express Hwy)',
     hospital: [18.9900, 73.3700],
     hospitalName: 'Matheran Cottage Hospital (1.1 km)',
     crowd: 'Very Low (Vehicle-Free Zone)',
@@ -65,6 +73,11 @@ const hubData = {
       { title: 'Panorama Point', tag: '360° Sunrise View' },
       { title: 'Charlotte Lake', tag: 'Serene Water Body' },
       { title: 'Historic Toy Train', tag: 'Heritage Ride' }
+    ],
+    nearbySpots: [
+      { name: 'Panorama Point', coords: [18.9920, 73.3600], desc: 'Best 360-degree sunrise and sunset view' },
+      { name: 'Charlotte Lake', coords: [18.9800, 73.3750], desc: 'Quiet picnic spot with historic Louisa Point nearby' },
+      { name: 'Karnala Bird Sanctuary', coords: [18.8850, 73.1150], desc: 'En route green sanctuary with rare bird species' }
     ],
     phrasebook: [
       { english: 'How are you?', local: 'Kasa kay? 😊' },
@@ -86,6 +99,7 @@ const hubData = {
   Jaipur: {
     name: 'Sambhar Salt Lake (Mirror Lake & Skies)',
     coords: [26.9044, 75.1953],
+    distanceInfo: '🚙 ~80 km from Jaipur (1.5 hrs via NH 8)',
     hospital: [26.9200, 75.2000],
     hospitalName: 'Community Health Centre Sambhar (3.0 km)',
     crowd: 'Ultra Low (Peaceful)',
@@ -99,6 +113,11 @@ const hubData = {
       { title: 'Infinite Salt Flats', tag: 'Mirror Reflection' },
       { title: 'Shakambari Temple', tag: 'Spiritual Trail' },
       { title: 'Flamingo Point', tag: 'Migratory Birds' }
+    ],
+    nearbySpots: [
+      { name: 'Shakambari Mata Temple', coords: [27.0800, 75.1500], desc: 'Ancient hilltop temple overlooking salt basin' },
+      { name: 'Devyani Kund', coords: [26.9150, 75.1800], desc: 'Historic sacred water reservoir' },
+      { name: 'Sambhar Lake Railway Yard', coords: [26.9250, 75.1900], desc: 'Vintage salt train tracks and loading station' }
     ],
     phrasebook: [
       { english: 'Hello / Greetings', local: 'Ram Ram Sa 👋' },
@@ -120,6 +139,7 @@ const hubData = {
   Bengaluru: {
     name: 'Nandi Hills (Sunrise Viewpoint)',
     coords: [13.3702, 77.6835],
+    distanceInfo: '🏍️ ~60 km from Bengaluru (1 hr 15 mins via NH 44)',
     hospital: [13.3800, 77.6700],
     hospitalName: 'Government Hospital Chickballapur (4.5 km)',
     crowd: 'Moderate (Early Morning Best)',
@@ -133,6 +153,11 @@ const hubData = {
       { title: 'Tipu’s Drop Summit', tag: 'Cliff Viewpoint' },
       { title: 'Bhoga Nandeeshwara', tag: '9th Century Temple' },
       { title: 'Cloud Horizon Point', tag: 'Sea of Clouds' }
+    ],
+    nearbySpots: [
+      { name: 'Bhoga Nandeeshwara Temple', coords: [13.3650, 77.7050], desc: 'Exquisite 9th-century Chola architectural marvel' },
+      { name: 'Skandagiri Hills', coords: [13.4150, 77.6550], desc: 'Popular night-trekking and star-gazing peak' },
+      { name: 'Tipu’s Summer Palace', coords: [13.3710, 77.6820], desc: 'Historic wooden citadel at hilltop' }
     ],
     phrasebook: [
       { english: 'Hello', local: 'Namaskara 🙏' },
@@ -222,7 +247,7 @@ function App() {
   // Download Itinerary as Text File
   const downloadItinerary = () => {
     const activeDest = hubData[formData.hub] || hubData['Delhi'];
-    const content = `=================================\n AROVIA - SMART TRAVEL ITINERARY\n=================================\nDestination: ${activeDest.name}\nStarting Hub: ${formData.hub}\nTime Allocated: ${formData.time}\nEstimated Budget: ${formData.budget}\nWeather Forecast: ${activeDest.weather}\nLocal Food Specialty: ${activeDest.food}\nEco-Sustainability Score: ${activeDest.ecoScore}\n\nDAY-WISE PLAN:\n${activeDest.itinerary.join('\n')}\n\nEMERGENCY & SAFETY:\nNearest Hospital: ${activeDest.hospitalName}\nHelpline: ${activeDest.emergencyContact}\n\nDeveloped by Team Arovia\nArovia Platform`;
+    const content = `=================================\n AROVIA - SMART TRAVEL ITINERARY\n=================================\nDestination: ${activeDest.name}\nStarting Hub: ${formData.hub} (${activeDest.distanceInfo})\nTime Allocated: ${formData.time}\nEstimated Budget: ${formData.budget}\nWeather Forecast: ${activeDest.weather}\nLocal Food Specialty: ${activeDest.food}\nEco-Sustainability Score: ${activeDest.ecoScore}\n\nDAY-WISE PLAN:\n${activeDest.itinerary.join('\n')}\n\nEMERGENCY & SAFETY:\nNearest Hospital: ${activeDest.hospitalName}\nHelpline: ${activeDest.emergencyContact}\n\nDeveloped by Team Arovia\nArovia Platform`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -232,6 +257,14 @@ function App() {
     a.click();
   };
 
+  // Share on WhatsApp
+  const shareOnWhatsApp = () => {
+    const activeDest = hubData[formData.hub] || hubData['Delhi'];
+    const text = encodeURIComponent(`🚀 Check out my Arovia Smart Travel Plan for *${activeDest.name}* starting from ${formData.hub}!\n\n📍 ${activeDest.distanceInfo}\n🌤️ Weather: ${activeDest.weather}\n🌿 Eco-Score: ${activeDest.ecoScore}\n\nGenerated via Arovia Platform.`);
+    window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+  };
+
+  // Leaflet Map Initialization with Multi-Spot Markers
   useEffect(() => {
     if (submitted && mapRef.current) {
       const currentDest = hubData[formData.hub] || hubData['Delhi'];
@@ -247,16 +280,24 @@ function App() {
         attribution: '&copy; Arovia Intelligence Routing'
       }).addTo(map);
 
+      // Main Destination Marker
       L.marker(currentDest.coords).addTo(map)
-        .bindPopup(`<b>${currentDest.name}</b><br />Crowd: ${currentDest.crowd}`)
+        .bindPopup(`<b>🎯 Main Hub: ${currentDest.name}</b><br />Crowd: ${currentDest.crowd}`)
         .openPopup();
 
+      // Hospital Marker
       L.circleMarker(currentDest.hospital, {
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.6,
         radius: 8
-      }).addTo(map).bindPopup(`<b>Emergency Care:</b> ${currentDest.hospitalName}`);
+      }).addTo(map).bindPopup(`<b>🏥 Emergency Care:</b> ${currentDest.hospitalName}`);
+
+      // Surrounding Offbeat Spot Markers
+      currentDest.nearbySpots.forEach((spot) => {
+        L.marker(spot.coords).addTo(map)
+          .bindPopup(`<b>📍 Offbeat Spot: ${spot.name}</b><br />${spot.desc}`);
+      });
 
       mapInstanceRef.current = map;
     }
@@ -375,6 +416,7 @@ function App() {
               <div>
                 <h2 className="text-lg font-bold text-cyan-400">{activeDestination.name}</h2>
                 <p className="text-xs text-slate-300 mt-1">{activeDestination.desc}</p>
+                <p className="text-[11px] text-amber-300 mt-1 font-mono">📍 {activeDestination.distanceInfo}</p>
               </div>
               <div className="flex flex-col items-end gap-1">
                 <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-semibold border border-green-500/30 whitespace-nowrap">
@@ -388,7 +430,7 @@ function App() {
 
             {/* Scenic Spot Preview Gallery Cards */}
             <div className="space-y-2">
-              <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Scenic Spot Highlights 📸</h3>
+              <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Scenic Spot Highlights & Map Pins 📸</h3>
               <div className="grid grid-cols-3 gap-3">
                 {activeDestination.scenicSpots.map((spot, idx) => (
                   <div key={idx} className="bg-gradient-to-br from-slate-900 to-slate-800 p-3 rounded-xl border border-slate-700 text-center shadow-md flex flex-col justify-between">
@@ -420,11 +462,14 @@ function App() {
               </div>
             </div>
 
-            {/* Interactive Map Box */}
+            {/* Interactive Map Box with Multiple Markers */}
             <div 
               ref={mapRef} 
-              className="w-full h-52 rounded-xl border border-slate-700 z-10 shadow-inner"
+              className="w-full h-56 rounded-xl border border-slate-700 z-10 shadow-inner"
             ></div>
+            <p className="text-[10px] text-slate-400 text-center italic">
+              ℹ️ Map displays multiple surrounding offbeat spots & emergency healthcare stations. Click markers for details!
+            </p>
 
             {/* SOS Emergency Alert Button */}
             <button 
@@ -505,18 +550,24 @@ function App() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-4 pt-1">
+            <div className="grid grid-cols-3 gap-3 pt-1">
               <button 
                 onClick={() => setSubmitted(false)}
-                className="w-1/2 bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 rounded-lg transition duration-200 text-sm cursor-pointer"
+                className="bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer"
               >
-                ← Modify Inputs
+                ← Modify
               </button>
               <button 
                 onClick={downloadItinerary}
-                className="w-1/2 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-white font-medium py-2.5 rounded-lg transition duration-200 text-sm cursor-pointer shadow-md"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer shadow-md"
               >
-                📥 Download Plan
+                📥 Download
+              </button>
+              <button 
+                onClick={shareOnWhatsApp}
+                className="bg-green-600 hover:bg-green-500 text-white font-medium py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer shadow-md flex items-center justify-center gap-1"
+              >
+                <span>💬</span> Share
               </button>
             </div>
           </div>
@@ -526,7 +577,7 @@ function App() {
       {/* SOS Modal Alert Window */}
       {isSosActive && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border-2 border-red-600 w-full max-w-md p-6 rounded-2xl shadow-2xl space-y-4 text-center animate-bounce-once">
+          <div className="bg-slate-900 border-2 border-red-600 w-full max-w-md p-6 rounded-2xl shadow-2xl space-y-4 text-center">
             <div className="w-16 h-16 bg-red-600/20 text-red-500 rounded-full flex items-center justify-center mx-auto text-3xl border border-red-600/40">
               🚨
             </div>
