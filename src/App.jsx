@@ -359,7 +359,7 @@ function App() {
 
   return (
     <div 
-      className="min-h-screen text-white flex flex-col items-center justify-between p-6 relative overflow-x-hidden"
+      className="min-h-screen text-white flex flex-col items-center justify-between p-6 relative overflow-x-hidden selection:bg-emerald-500 selection:text-slate-950"
       style={{
         backgroundImage: 'url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80")',
         backgroundSize: 'cover',
@@ -368,43 +368,43 @@ function App() {
       }}
     >
       
-      {/* Dark Semi-Transparent Overlay for Perfect Text Readability */}
-      <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-[2px] pointer-events-none"></div>
+      {/* Dark Premium Frosted Overlay */}
+      <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-[3px] pointer-events-none"></div>
 
       {/* Header */}
       <div className="text-center mt-6 z-10">
-        <h1 className="text-5xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400 drop-shadow-lg">
+        <h1 className="text-5xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500 drop-shadow-lg">
           AROVIA
         </h1>
-        <p className="text-emerald-300/90 mt-1 text-sm italic font-medium">
+        <p className="text-emerald-300/90 mt-1 text-sm italic font-medium tracking-wide">
           "Arovia - Where memories meet your next journey"
         </p>
       </div>
 
-      {/* Main Container - Centered Perfectly & Widened */}
-      <div className="w-full max-w-2xl bg-slate-950/85 backdrop-blur-2xl border border-emerald-500/30 p-8 rounded-3xl shadow-2xl my-8 z-10 shadow-emerald-950/50">
+      {/* Main Container - Figma Glassmorphic Panel */}
+      <div className="w-full max-w-2xl bg-slate-950/90 backdrop-blur-2xl border border-emerald-500/30 p-8 rounded-3xl shadow-2xl shadow-emerald-950/80 my-8 z-10 transition-all duration-300 hover:border-emerald-500/50">
         
         {!submitted ? (
           <form onSubmit={handleSubmit} className="space-y-6">
             
             {/* Form Title Card Header */}
-            <div className="text-center pb-2 border-b border-emerald-900/60">
-              <h2 className="text-lg font-bold text-emerald-400 flex items-center justify-center gap-2">
+            <div className="text-center pb-3 border-b border-emerald-900/60">
+              <h2 className="text-base font-bold text-emerald-400 flex items-center justify-center gap-2">
                 <span>🗺️</span> AI Sustainable Trip Customizer
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">Configure your preferences to generate an offbeat smart itinerary</p>
+              <p className="text-xs text-slate-400 mt-0.5">Configure your parameters for smart offbeat routing</p>
             </div>
 
             {/* Starting Hub */}
             <div>
-              <label className="block text-sm font-semibold text-emerald-300 mb-1.5 flex items-center gap-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
                 <span>📍</span> Starting Tourism Hub
               </label>
               <select 
                 name="hub" 
                 value={formData.hub} 
                 onChange={handleChange}
-                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-white focus:outline-none focus:border-emerald-400 transition shadow-inner"
+                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
               >
                 <option value="Delhi">Delhi</option>
                 <option value="Mumbai">Mumbai</option>
@@ -416,14 +416,14 @@ function App() {
             {/* Time Constraint (Dropdown) & Budget Row */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-emerald-300 mb-1.5 flex items-center gap-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
                   <span>⏱️</span> Time Duration
                 </label>
                 <select 
                   name="time" 
                   value={formData.time} 
                   onChange={handleChange}
-                  className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-white focus:outline-none focus:border-emerald-400 transition shadow-inner"
+                  className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
                 >
                   <option value="1 Day">1 Day</option>
                   <option value="2 Days">2 Days</option>
@@ -433,7 +433,7 @@ function App() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-emerald-300 mb-1.5 flex items-center gap-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
                   <span>💰</span> Budget Limit
                 </label>
                 <input 
@@ -441,21 +441,21 @@ function App() {
                   name="budget" 
                   value={formData.budget} 
                   onChange={handleChange}
-                  className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-white focus:outline-none focus:border-emerald-400 transition shadow-inner"
+                  className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
                 />
               </div>
             </div>
 
             {/* Interests */}
             <div>
-              <label className="block text-sm font-semibold text-emerald-300 mb-1.5 flex items-center gap-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
                 <span>✨</span> Primary Interests
               </label>
               <select 
                 name="interest" 
                 value={formData.interest} 
                 onChange={handleChange}
-                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-white focus:outline-none focus:border-emerald-400 transition shadow-inner"
+                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
               >
                 <option value="Heritage & Culture">Heritage & Culture</option>
                 <option value="Nature & Wildlife">Nature & Wildlife</option>
@@ -466,14 +466,14 @@ function App() {
 
             {/* Crowd Preference */}
             <div>
-              <label className="block text-sm font-semibold text-emerald-300 mb-1.5 flex items-center gap-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
                 <span>🌿</span> Crowd Preference
               </label>
               <select 
                 name="crowdPreference" 
                 value={formData.crowdPreference} 
                 onChange={handleChange}
-                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-white focus:outline-none focus:border-emerald-400 transition shadow-inner"
+                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
               >
                 <option value="Less Crowded">Less Crowded (Offbeat Hidden Gem)</option>
                 <option value="Moderate">Moderate</option>
@@ -484,7 +484,7 @@ function App() {
             {/* Submit Button */}
             <button 
               type="submit"
-              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-extrabold py-4 rounded-xl transition duration-200 shadow-xl shadow-emerald-950/60 cursor-pointer mt-4 text-sm tracking-wide uppercase"
+              className="w-full bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 hover:from-emerald-300 hover:to-teal-400 text-slate-950 font-extrabold py-4 rounded-xl transition-all duration-300 shadow-xl shadow-emerald-950/80 hover:shadow-emerald-500/20 cursor-pointer mt-4 text-xs tracking-widest uppercase transform hover:-translate-y-0.5"
             >
               Generate Personalized Route 🚀
             </button>
@@ -494,7 +494,7 @@ function App() {
           <div className="space-y-5">
             
             {/* SIH 2026 Alignment Badge */}
-            <div className="bg-emerald-950/90 border border-emerald-700/60 p-2.5 rounded-xl text-center shadow-inner">
+            <div className="bg-emerald-950/90 border border-emerald-600/40 p-2.5 rounded-xl text-center shadow-inner">
               <span className="text-[11px] font-semibold text-emerald-300 tracking-wide uppercase">
                 🏆 Smart India Hackathon 2026 | Sustainable Tourism & Tourist Safety Platform
               </span>
@@ -502,7 +502,7 @@ function App() {
 
             <div className="flex justify-between items-center bg-slate-900/90 border border-emerald-800/50 p-4 rounded-xl shadow-md">
               <div>
-                <h2 className="text-lg font-bold text-emerald-400">{activeDestination.name}</h2>
+                <h2 className="text-base font-bold text-emerald-400">{activeDestination.name}</h2>
                 <p className="text-xs text-slate-300 mt-1">{activeDestination.desc}</p>
                 <p className="text-[11px] text-teal-300 mt-1 font-mono">📍 {activeDestination.distanceInfo} | ⏱️ {formData.time}</p>
               </div>
@@ -521,7 +521,7 @@ function App() {
               <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Scenic Spot Highlights & Map Pins 📸</h3>
               <div className="grid grid-cols-3 gap-3">
                 {activeDestination.scenicSpots.map((spot, idx) => (
-                  <div key={idx} className="bg-gradient-to-br from-slate-900 to-slate-950 p-3 rounded-xl border border-emerald-900/60 text-center shadow-md flex flex-col justify-between">
+                  <div key={idx} className="bg-gradient-to-br from-slate-900 to-slate-950 p-3 rounded-xl border border-emerald-900/60 text-center shadow-md flex flex-col justify-between hover:border-emerald-500/40 transition">
                     <span className="text-2xl mb-1">🌄</span>
                     <div>
                       <p className="text-xs font-bold text-white">{spot.title}</p>
@@ -701,7 +701,7 @@ function App() {
         {!isChatOpen ? (
           <button 
             onClick={() => setIsChatOpen(true)}
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold p-4 rounded-full shadow-2xl flex items-center gap-2 cursor-pointer transition transform hover:scale-105 border border-emerald-400/40"
+            className="bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-300 hover:to-teal-400 text-slate-950 font-bold p-4 rounded-full shadow-2xl flex items-center gap-2 cursor-pointer transition transform hover:scale-105 border border-emerald-300/50"
           >
             <span className="text-xl">🤖</span>
             <span className="text-xs font-semibold pr-1">Ask AI Assistant</span>
