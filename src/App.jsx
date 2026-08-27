@@ -358,31 +358,31 @@ function App() {
   const currentItinerary = getDynamicItinerary(activeDestination);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white flex flex-col items-center justify-between p-6 relative">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-900 text-white flex flex-col items-center justify-between p-6 relative">
       
       {/* Header */}
       <div className="text-center mt-4">
-        <h1 className="text-4xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+        <h1 className="text-4xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
           AROVIA
         </h1>
-        <p className="text-slate-400 mt-1 text-xs italic">
+        <p className="text-emerald-300/80 mt-1 text-xs italic">
           "Arovia - Where memories meet your next journey"
         </p>
       </div>
 
       {/* Main Container */}
-      <div className="w-full max-w-3xl bg-slate-800/60 backdrop-blur-md border border-slate-700 p-8 rounded-2xl shadow-2xl my-6">
+      <div className="w-full max-w-3xl bg-slate-900/70 backdrop-blur-md border border-emerald-900/50 p-8 rounded-2xl shadow-2xl my-6">
         {!submitted ? (
           <form onSubmit={handleSubmit} className="space-y-5">
             
             {/* Starting Hub */}
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Starting Tourism Hub</label>
+              <label className="block text-sm font-medium text-emerald-300 mb-1.5">Starting Tourism Hub</label>
               <select 
                 name="hub" 
                 value={formData.hub} 
                 onChange={handleChange}
-                className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-cyan-400"
+                className="w-full bg-slate-950 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400"
               >
                 <option value="Delhi">Delhi</option>
                 <option value="Mumbai">Mumbai</option>
@@ -394,12 +394,12 @@ function App() {
             {/* Time Constraint (Dropdown) & Budget Row */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Time Constraint (Duration)</label>
+                <label className="block text-sm font-medium text-emerald-300 mb-1.5">Time Constraint (Duration)</label>
                 <select 
                   name="time" 
                   value={formData.time} 
                   onChange={handleChange}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-cyan-400"
+                  className="w-full bg-slate-950 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400"
                 >
                   <option value="1 Day">1 Day</option>
                   <option value="2 Days">2 Days</option>
@@ -409,25 +409,25 @@ function App() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Budget</label>
+                <label className="block text-sm font-medium text-emerald-300 mb-1.5">Budget</label>
                 <input 
                   type="text" 
                   name="budget" 
                   value={formData.budget} 
                   onChange={handleChange}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-cyan-400"
+                  className="w-full bg-slate-950 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400"
                 />
               </div>
             </div>
 
             {/* Interests */}
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Interests</label>
+              <label className="block text-sm font-medium text-emerald-300 mb-1.5">Interests</label>
               <select 
                 name="interest" 
                 value={formData.interest} 
                 onChange={handleChange}
-                className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-cyan-400"
+                className="w-full bg-slate-950 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400"
               >
                 <option value="Heritage & Culture">Heritage & Culture</option>
                 <option value="Nature & Wildlife">Nature & Wildlife</option>
@@ -438,12 +438,12 @@ function App() {
 
             {/* Crowd Preference */}
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Crowd Preference</label>
+              <label className="block text-sm font-medium text-emerald-300 mb-1.5">Crowd Preference</label>
               <select 
                 name="crowdPreference" 
                 value={formData.crowdPreference} 
                 onChange={handleChange}
-                className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-cyan-400"
+                className="w-full bg-slate-950 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400"
               >
                 <option value="Less Crowded">Less Crowded (Offbeat Hidden Gem)</option>
                 <option value="Moderate">Moderate</option>
@@ -454,7 +454,7 @@ function App() {
             {/* Submit Button */}
             <button 
               type="submit"
-              className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold py-3.5 rounded-lg transition duration-200 shadow-lg cursor-pointer mt-2"
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold py-3.5 rounded-lg transition duration-200 shadow-lg cursor-pointer mt-2"
             >
               Generate Personalized Route 🚀
             </button>
@@ -464,23 +464,23 @@ function App() {
           <div className="space-y-5">
             
             {/* SIH 2026 Alignment Badge */}
-            <div className="bg-indigo-950/60 border border-indigo-700/50 p-2.5 rounded-xl text-center">
-              <span className="text-[11px] font-semibold text-indigo-300 tracking-wide uppercase">
+            <div className="bg-emerald-950/80 border border-emerald-700/60 p-2.5 rounded-xl text-center">
+              <span className="text-[11px] font-semibold text-emerald-300 tracking-wide uppercase">
                 🏆 Smart India Hackathon 2026 | Sustainable Tourism & Tourist Safety Platform
               </span>
             </div>
 
-            <div className="flex justify-between items-center bg-cyan-950/40 border border-cyan-800 p-4 rounded-xl">
+            <div className="flex justify-between items-center bg-slate-950/60 border border-emerald-800/50 p-4 rounded-xl">
               <div>
-                <h2 className="text-lg font-bold text-cyan-400">{activeDestination.name}</h2>
+                <h2 className="text-lg font-bold text-emerald-400">{activeDestination.name}</h2>
                 <p className="text-xs text-slate-300 mt-1">{activeDestination.desc}</p>
-                <p className="text-[11px] text-amber-300 mt-1 font-mono">📍 {activeDestination.distanceInfo} | ⏱️ {formData.time}</p>
+                <p className="text-[11px] text-teal-300 mt-1 font-mono">📍 {activeDestination.distanceInfo} | ⏱️ {formData.time}</p>
               </div>
               <div className="flex flex-col items-end gap-1">
-                <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-semibold border border-green-500/30 whitespace-nowrap">
+                <span className="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold border border-emerald-500/30 whitespace-nowrap">
                   {activeDestination.crowd}
                 </span>
-                <span className="text-[10px] text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">
+                <span className="text-[10px] text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-700">
                   🌿 {activeDestination.carbonSaved}
                 </span>
               </div>
@@ -488,14 +488,14 @@ function App() {
 
             {/* Scenic Spot Preview Gallery Cards */}
             <div className="space-y-2">
-              <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Scenic Spot Highlights & Map Pins 📸</h3>
+              <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Scenic Spot Highlights & Map Pins 📸</h3>
               <div className="grid grid-cols-3 gap-3">
                 {activeDestination.scenicSpots.map((spot, idx) => (
-                  <div key={idx} className="bg-gradient-to-br from-slate-900 to-slate-800 p-3 rounded-xl border border-slate-700 text-center shadow-md flex flex-col justify-between">
+                  <div key={idx} className="bg-gradient-to-br from-slate-950 to-slate-900 p-3 rounded-xl border border-emerald-900/60 text-center shadow-md flex flex-col justify-between">
                     <span className="text-2xl mb-1">🌄</span>
                     <div>
                       <p className="text-xs font-bold text-white">{spot.title}</p>
-                      <span className="text-[10px] text-cyan-400 bg-cyan-950/50 px-2 py-0.5 rounded-full inline-block mt-1 border border-cyan-800/40">{spot.tag}</span>
+                      <span className="text-[10px] text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded-full inline-block mt-1 border border-emerald-800/40">{spot.tag}</span>
                     </div>
                   </div>
                 ))}
@@ -504,31 +504,31 @@ function App() {
 
             {/* Weather & Local Food Grid */}
             <div className="grid grid-cols-2 gap-4 text-xs">
-              <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-700 flex items-center gap-3">
+              <div className="bg-slate-950/80 p-3 rounded-xl border border-emerald-900/60 flex items-center gap-3">
                 <span className="text-xl">🌤️</span>
                 <div>
                   <p className="text-slate-400">Weather Forecast</p>
-                  <p className="text-cyan-300 font-semibold">{activeDestination.weather}</p>
+                  <p className="text-emerald-300 font-semibold">{activeDestination.weather}</p>
                 </div>
               </div>
-              <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-700 flex items-center gap-3">
+              <div className="bg-slate-950/80 p-3 rounded-xl border border-emerald-900/60 flex items-center gap-3">
                 <span className="text-xl">🍲</span>
                 <div>
                   <p className="text-slate-400">Local Food Special</p>
-                  <p className="text-cyan-300 font-semibold">{activeDestination.food}</p>
+                  <p className="text-emerald-300 font-semibold">{activeDestination.food}</p>
                 </div>
               </div>
             </div>
 
-            {/* Map Header Updated */}
+            {/* Map Header */}
             <div className="pt-2">
-              <span className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Smart Routing & Destination Map 🗺️</span>
+              <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Smart Routing & Destination Map 🗺️</span>
             </div>
 
             {/* Stable Interactive Map Box */}
             <div 
               ref={mapRef} 
-              className="w-full h-80 rounded-xl border border-slate-700 z-10 shadow-inner"
+              className="w-full h-80 rounded-xl border border-emerald-900/60 z-10 shadow-inner"
             ></div>
             <p className="text-[10px] text-slate-400 text-center italic">
               ℹ️ Map displays multiple surrounding offbeat pins & emergency care stations clearly. Click any marker!
@@ -543,32 +543,32 @@ function App() {
             </button>
 
             {/* Budget Breakdown Visualizer */}
-            <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-700 space-y-2">
+            <div className="bg-slate-950/80 p-4 rounded-xl border border-emerald-900/60 space-y-2">
               <div className="flex justify-between items-center text-xs">
-                <span className="font-bold text-cyan-300 uppercase tracking-wider">AI Budget Split Estimation</span>
+                <span className="font-bold text-emerald-300 uppercase tracking-wider">AI Budget Split Estimation</span>
                 <span className="text-slate-400">Total: {formData.budget}</span>
               </div>
-              <div className="w-full bg-slate-800 h-3 rounded-full overflow-hidden flex">
-                <div style={{ width: `${activeDestination.budgetSplit.stay}%` }} className="bg-cyan-500" title="Stay & Lodge"></div>
-                <div style={{ width: `${activeDestination.budgetSplit.transport}%` }} className="bg-blue-500" title="Transport"></div>
-                <div style={{ width: `${activeDestination.budgetSplit.food}%` }} className="bg-emerald-500" title="Food"></div>
+              <div className="w-full bg-slate-900 h-3 rounded-full overflow-hidden flex">
+                <div style={{ width: `${activeDestination.budgetSplit.stay}%` }} className="bg-emerald-500" title="Stay & Lodge"></div>
+                <div style={{ width: `${activeDestination.budgetSplit.transport}%` }} className="bg-teal-500" title="Transport"></div>
+                <div style={{ width: `${activeDestination.budgetSplit.food}%` }} className="bg-green-500" title="Food"></div>
                 <div style={{ width: `${activeDestination.budgetSplit.reserve}%` }} className="bg-amber-500" title="Emergency"></div>
               </div>
               <div className="flex justify-between text-[10px] text-slate-400 pt-1">
-                <span className="text-cyan-400">Stay ({activeDestination.budgetSplit.stay}%)</span>
-                <span className="text-blue-400">Transport ({activeDestination.budgetSplit.transport}%)</span>
-                <span className="text-emerald-400">Food ({activeDestination.budgetSplit.food}%)</span>
+                <span className="text-emerald-400">Stay ({activeDestination.budgetSplit.stay}%)</span>
+                <span className="text-teal-400">Transport ({activeDestination.budgetSplit.transport}%)</span>
+                <span className="text-green-400">Food ({activeDestination.budgetSplit.food}%)</span>
                 <span className="text-amber-400">Reserve ({activeDestination.budgetSplit.reserve}%)</span>
               </div>
             </div>
 
             {/* Dynamic Day-Wise Itinerary Section */}
-            <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-700 space-y-2">
-              <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Smart AI Itinerary Plan ({formData.time})</h3>
+            <div className="bg-slate-950/80 p-4 rounded-xl border border-emerald-900/60 space-y-2">
+              <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Smart AI Itinerary Plan ({formData.time})</h3>
               <ul className="space-y-1.5 text-xs text-slate-300">
                 {currentItinerary.map((item, index) => (
                   <li key={index} className="flex items-start gap-2">
-                    <span className="text-cyan-400 font-bold">•</span>
+                    <span className="text-emerald-400 font-bold">•</span>
                     <span>{item}</span>
                   </li>
                 ))}
@@ -576,29 +576,29 @@ function App() {
             </div>
 
             {/* Local Language & Cultural Phrasebook Card */}
-            <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-700 space-y-2">
-              <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Local Language Phrasebook & Tips 🗣️</h3>
+            <div className="bg-slate-950/80 p-4 rounded-xl border border-emerald-900/60 space-y-2">
+              <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Local Language Phrasebook & Tips 🗣️</h3>
               <div className="grid grid-cols-3 gap-2 pt-1">
                 {activeDestination.phrasebook.map((phrase, idx) => (
-                  <div key={idx} className="bg-slate-800/60 p-2.5 rounded-lg border border-slate-700 text-center">
+                  <div key={idx} className="bg-slate-900/60 p-2.5 rounded-lg border border-emerald-900/50 text-center">
                     <p className="text-[10px] text-slate-400">{phrase.english}</p>
-                    <p className="text-xs font-bold text-cyan-300 mt-0.5">{phrase.local}</p>
+                    <p className="text-xs font-bold text-emerald-300 mt-0.5">{phrase.local}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Smart Interactive Packing Checklist */}
-            <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-700 space-y-2">
-              <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Smart Packing Checklist</h3>
+            <div className="bg-slate-950/80 p-4 rounded-xl border border-emerald-900/60 space-y-2">
+              <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Smart Packing Checklist</h3>
               <div className="grid grid-cols-2 gap-2 pt-1">
                 {activeDestination.packingList.map((item, idx) => (
-                  <label key={idx} className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer bg-slate-800/50 p-2 rounded-lg border border-slate-700/50 hover:bg-slate-800">
+                  <label key={idx} className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer bg-slate-900/50 p-2 rounded-lg border border-emerald-900/40 hover:bg-slate-900">
                     <input 
                       type="checkbox" 
                       checked={!!checkedItems[item]} 
                       onChange={() => handleCheckboxChange(item)}
-                      className="rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-0 cursor-pointer"
+                      className="rounded bg-slate-950 border-emerald-800 text-emerald-500 focus:ring-0 cursor-pointer"
                     />
                     <span className={checkedItems[item] ? 'line-through text-slate-500' : ''}>{item}</span>
                   </label>
@@ -616,19 +616,19 @@ function App() {
             <div className="grid grid-cols-3 gap-3 pt-1">
               <button 
                 onClick={() => setSubmitted(false)}
-                className="bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer"
+                className="bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer border border-emerald-900/50"
               >
                 ← Modify
               </button>
               <button 
                 onClick={downloadItinerary}
-                className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer shadow-md"
+                className="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer shadow-md"
               >
                 📥 Download
               </button>
               <button 
                 onClick={shareOnWhatsApp}
-                className="bg-green-600 hover:bg-green-500 text-white font-medium py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer shadow-md flex items-center justify-center gap-1"
+                className="bg-teal-600 hover:bg-teal-500 text-white font-medium py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer shadow-md flex items-center justify-center gap-1"
               >
                 <span>💬</span> Share
               </button>
@@ -637,10 +637,10 @@ function App() {
         )}
       </div>
 
-      {/* Emergency Assistant & Nearby Services Modal Window */}
+      {/* Emergency Assistant Modal Window */}
       {isSosActive && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border-2 border-red-600 w-full max-w-md p-6 rounded-2xl shadow-2xl space-y-4 text-center">
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-950 border-2 border-red-600 w-full max-w-md p-6 rounded-2xl shadow-2xl space-y-4 text-center">
             <div className="w-16 h-16 bg-red-600/20 text-red-500 rounded-full flex items-center justify-center mx-auto text-3xl border border-red-600/40">
               🚨
             </div>
@@ -649,16 +649,16 @@ function App() {
               Live GPS coordinates, nearest medical care, and regional emergency services have been successfully synced and broadcasted.
             </p>
 
-            <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-left space-y-1.5 text-xs font-mono">
+            <div className="bg-slate-900 p-3 rounded-xl border border-slate-800 text-left space-y-1.5 text-xs font-mono">
               <p className="text-slate-400">📍 Status: <span className="text-red-400 font-bold">Services Synced</span></p>
               <p className="text-slate-400">🏥 Nearest Care: <span className="text-white">{activeDestination.hospitalName}</span></p>
-              <p className="text-slate-400">📞 Active Helpline: <span className="text-cyan-400">{activeDestination.emergencyContact}</span></p>
-              <p className="text-slate-400">🛰️ Coords: <span className="text-amber-400">{activeDestination.coords[0]}, {activeDestination.coords[1]}</span></p>
+              <p className="text-slate-400">📞 Active Helpline: <span className="text-emerald-400">{activeDestination.emergencyContact}</span></p>
+              <p className="text-slate-400">🛰️ Coords: <span className="text-teal-400">{activeDestination.coords[0]}, {activeDestination.coords[1]}</span></p>
             </div>
 
             <button 
               onClick={() => setIsSosActive(false)}
-              className="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-lg transition duration-200 text-xs border border-slate-700 cursor-pointer"
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-lg transition duration-200 text-xs border border-slate-800 cursor-pointer"
             >
               Close Assistant Window
             </button>
@@ -671,18 +671,18 @@ function App() {
         {!isChatOpen ? (
           <button 
             onClick={() => setIsChatOpen(true)}
-            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white p-4 rounded-full shadow-2xl flex items-center gap-2 cursor-pointer transition transform hover:scale-105 border border-cyan-400/40"
+            className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold p-4 rounded-full shadow-2xl flex items-center gap-2 cursor-pointer transition transform hover:scale-105 border border-emerald-400/40"
           >
             <span className="text-xl">🤖</span>
             <span className="text-xs font-semibold pr-1">Ask AI Assistant</span>
           </button>
         ) : (
-          <div className="w-80 h-96 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl">
+          <div className="w-80 h-96 bg-slate-950 border border-emerald-800/60 rounded-2xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl">
             {/* Chat Header */}
-            <div className="bg-slate-800 p-3 flex justify-between items-center border-b border-slate-700">
+            <div className="bg-slate-900 p-3 flex justify-between items-center border-b border-emerald-900/60">
               <div className="flex items-center gap-2">
                 <span className="text-base">🤖</span>
-                <span className="text-xs font-bold text-cyan-400">Arovia AI Guide</span>
+                <span className="text-xs font-bold text-emerald-400">Arovia AI Guide</span>
               </div>
               <button 
                 onClick={() => setIsChatOpen(false)}
@@ -696,7 +696,7 @@ function App() {
             <div className="flex-1 p-3 overflow-y-auto space-y-3 text-xs">
               {messages.map((msg, idx) => (
                 <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] p-2.5 rounded-xl ${msg.sender === 'user' ? 'bg-cyan-600 text-white rounded-br-none' : 'bg-slate-800 text-slate-200 rounded-bl-none border border-slate-700'}`}>
+                  <div className={`max-w-[85%] p-2.5 rounded-xl ${msg.sender === 'user' ? 'bg-emerald-600 text-slate-950 font-medium rounded-br-none' : 'bg-slate-900 text-slate-200 rounded-bl-none border border-emerald-900/50'}`}>
                     {msg.text}
                   </div>
                 </div>
@@ -704,17 +704,17 @@ function App() {
             </div>
 
             {/* Chat Input Form */}
-            <form onSubmit={handleSendMessage} className="p-2.5 bg-slate-800 border-t border-slate-700 flex gap-2">
+            <form onSubmit={handleSendMessage} className="p-2.5 bg-slate-900 border-t border-emerald-900/60 flex gap-2">
               <input 
                 type="text" 
                 placeholder="Ask about budget, weather, safety..." 
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+                className="flex-1 bg-slate-950 border border-emerald-800/60 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
               />
               <button 
                 type="submit"
-                className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-3 py-2 rounded-lg text-xs cursor-pointer"
+                className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-3 py-2 rounded-lg text-xs cursor-pointer"
               >
                 Send
               </button>
