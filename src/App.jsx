@@ -326,9 +326,9 @@ function App() {
 
       // Hospital Marker
       L.circleMarker(currentDest.hospital, {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.6,
+        color: '#38bdf8',
+        fillColor: '#0ea5e9',
+        fillOpacity: 0.8,
         radius: 8
       }).addTo(map).bindPopup(`<b>🏥 Emergency Care:</b> ${currentDest.hospitalName}`);
       markerCoordinates.push(currentDest.hospital);
@@ -359,7 +359,7 @@ function App() {
 
   return (
     <div 
-      className="min-h-screen text-white flex flex-col items-center justify-between p-6 relative overflow-x-hidden selection:bg-emerald-500 selection:text-slate-950"
+      className="min-h-screen text-white flex flex-col items-center justify-between p-6 relative overflow-x-hidden selection:bg-cyan-400 selection:text-slate-950"
       style={{
         backgroundImage: 'url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80")',
         backgroundSize: 'cover',
@@ -368,28 +368,28 @@ function App() {
       }}
     >
       
-      {/* Dark Premium Frosted Overlay */}
-      <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-[3px] pointer-events-none"></div>
+      {/* Dark Futuristic Cyber Overlay */}
+      <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-[4px] pointer-events-none"></div>
 
       {/* Header */}
       <div className="text-center mt-6 z-10">
-        <h1 className="text-5xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500 drop-shadow-lg">
+        <h1 className="text-5xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 drop-shadow-[0_0_20px_rgba(45,212,191,0.3)]">
           AROVIA
         </h1>
-        <p className="text-emerald-300/90 mt-1 text-sm italic font-medium tracking-wide">
+        <p className="text-cyan-300/90 mt-1 text-sm italic font-medium tracking-wide">
           "Arovia - Where memories meet your next journey"
         </p>
       </div>
 
-      {/* Main Container - Figma Glassmorphic Panel */}
-      <div className="w-full max-w-2xl bg-slate-950/90 backdrop-blur-2xl border border-emerald-500/30 p-8 rounded-3xl shadow-2xl shadow-emerald-950/80 my-8 z-10 transition-all duration-300 hover:border-emerald-500/50">
+      {/* Main Container - Cyber-SaaS Glass Panel */}
+      <div className="w-full max-w-2xl bg-slate-950/90 backdrop-blur-2xl border border-cyan-500/30 p-8 rounded-3xl shadow-2xl shadow-cyan-950/80 my-8 z-10 transition-all duration-300 hover:border-cyan-400/50">
         
         {!submitted ? (
           <form onSubmit={handleSubmit} className="space-y-6">
             
             {/* Form Title Card Header */}
-            <div className="text-center pb-3 border-b border-emerald-900/60">
-              <h2 className="text-base font-bold text-emerald-400 flex items-center justify-center gap-2">
+            <div className="text-center pb-3 border-b border-cyan-900/60">
+              <h2 className="text-base font-bold text-cyan-400 flex items-center justify-center gap-2">
                 <span>🗺️</span> AI Sustainable Trip Customizer
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">Configure your parameters for smart offbeat routing</p>
@@ -397,14 +397,14 @@ function App() {
 
             {/* Starting Hub */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-cyan-300 mb-2 flex items-center gap-2">
                 <span>📍</span> Starting Tourism Hub
               </label>
               <select 
                 name="hub" 
                 value={formData.hub} 
                 onChange={handleChange}
-                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
+                className="w-full bg-slate-900/90 border border-cyan-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition-all shadow-inner"
               >
                 <option value="Delhi">Delhi</option>
                 <option value="Mumbai">Mumbai</option>
@@ -416,14 +416,14 @@ function App() {
             {/* Time Constraint (Dropdown) & Budget Row */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-cyan-300 mb-2 flex items-center gap-2">
                   <span>⏱️</span> Time Duration
                 </label>
                 <select 
                   name="time" 
                   value={formData.time} 
                   onChange={handleChange}
-                  className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
+                  className="w-full bg-slate-900/90 border border-cyan-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition-all shadow-inner"
                 >
                   <option value="1 Day">1 Day</option>
                   <option value="2 Days">2 Days</option>
@@ -433,7 +433,7 @@ function App() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-cyan-300 mb-2 flex items-center gap-2">
                   <span>💰</span> Budget Limit
                 </label>
                 <input 
@@ -441,21 +441,21 @@ function App() {
                   name="budget" 
                   value={formData.budget} 
                   onChange={handleChange}
-                  className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
+                  className="w-full bg-slate-900/90 border border-cyan-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition-all shadow-inner"
                 />
               </div>
             </div>
 
             {/* Interests */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-cyan-300 mb-2 flex items-center gap-2">
                 <span>✨</span> Primary Interests
               </label>
               <select 
                 name="interest" 
                 value={formData.interest} 
                 onChange={handleChange}
-                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
+                className="w-full bg-slate-900/90 border border-cyan-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition-all shadow-inner"
               >
                 <option value="Heritage & Culture">Heritage & Culture</option>
                 <option value="Nature & Wildlife">Nature & Wildlife</option>
@@ -466,14 +466,14 @@ function App() {
 
             {/* Crowd Preference */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-cyan-300 mb-2 flex items-center gap-2">
                 <span>🌿</span> Crowd Preference
               </label>
               <select 
                 name="crowdPreference" 
                 value={formData.crowdPreference} 
                 onChange={handleChange}
-                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
+                className="w-full bg-slate-900/90 border border-cyan-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition-all shadow-inner"
               >
                 <option value="Less Crowded">Less Crowded (Offbeat Hidden Gem)</option>
                 <option value="Moderate">Moderate</option>
@@ -484,7 +484,7 @@ function App() {
             {/* Submit Button */}
             <button 
               type="submit"
-              className="w-full bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 hover:from-emerald-300 hover:to-teal-400 text-slate-950 font-extrabold py-4 rounded-xl transition-all duration-300 shadow-xl shadow-emerald-950/80 hover:shadow-emerald-500/20 cursor-pointer mt-4 text-xs tracking-widest uppercase transform hover:-translate-y-0.5"
+              className="w-full bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-400 hover:from-cyan-300 hover:to-emerald-300 text-slate-950 font-extrabold py-4 rounded-xl transition-all duration-300 shadow-xl shadow-cyan-950/80 hover:shadow-cyan-400/30 cursor-pointer mt-4 text-xs tracking-widest uppercase transform hover:-translate-y-0.5"
             >
               Generate Personalized Route 🚀
             </button>
@@ -494,20 +494,20 @@ function App() {
           <div className="space-y-5">
             
             {/* SIH 2026 Alignment Badge */}
-            <div className="bg-emerald-950/90 border border-emerald-600/40 p-2.5 rounded-xl text-center shadow-inner">
-              <span className="text-[11px] font-semibold text-emerald-300 tracking-wide uppercase">
+            <div className="bg-slate-900/90 border border-cyan-500/40 p-2.5 rounded-xl text-center shadow-inner">
+              <span className="text-[11px] font-semibold text-cyan-300 tracking-wide uppercase">
                 🏆 Smart India Hackathon 2026 | Sustainable Tourism & Tourist Safety Platform
               </span>
             </div>
 
-            <div className="flex justify-between items-center bg-slate-900/90 border border-emerald-800/50 p-4 rounded-xl shadow-md">
+            <div className="flex justify-between items-center bg-slate-900/90 border border-cyan-900/60 p-4 rounded-xl shadow-md">
               <div>
-                <h2 className="text-base font-bold text-emerald-400">{activeDestination.name}</h2>
+                <h2 className="text-base font-bold text-cyan-400">{activeDestination.name}</h2>
                 <p className="text-xs text-slate-300 mt-1">{activeDestination.desc}</p>
                 <p className="text-[11px] text-teal-300 mt-1 font-mono">📍 {activeDestination.distanceInfo} | ⏱️ {formData.time}</p>
               </div>
               <div className="flex flex-col items-end gap-1">
-                <span className="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold border border-emerald-500/30 whitespace-nowrap">
+                <span className="bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-full text-xs font-semibold border border-cyan-500/30 whitespace-nowrap">
                   {activeDestination.crowd}
                 </span>
                 <span className="text-[10px] text-emerald-300 bg-emerald-950/90 px-2 py-0.5 rounded border border-emerald-700">
@@ -518,14 +518,14 @@ function App() {
 
             {/* Scenic Spot Preview Gallery Cards */}
             <div className="space-y-2">
-              <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Scenic Spot Highlights & Map Pins 📸</h3>
+              <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Scenic Spot Highlights & Map Pins 📸</h3>
               <div className="grid grid-cols-3 gap-3">
                 {activeDestination.scenicSpots.map((spot, idx) => (
-                  <div key={idx} className="bg-gradient-to-br from-slate-900 to-slate-950 p-3 rounded-xl border border-emerald-900/60 text-center shadow-md flex flex-col justify-between hover:border-emerald-500/40 transition">
+                  <div key={idx} className="bg-gradient-to-br from-slate-900 to-slate-950 p-3 rounded-xl border border-cyan-900/60 text-center shadow-md flex flex-col justify-between hover:border-cyan-500/40 transition">
                     <span className="text-2xl mb-1">🌄</span>
                     <div>
                       <p className="text-xs font-bold text-white">{spot.title}</p>
-                      <span className="text-[10px] text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded-full inline-block mt-1 border border-emerald-800/40">{spot.tag}</span>
+                      <span className="text-[10px] text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded-full inline-block mt-1 border border-cyan-800/40">{spot.tag}</span>
                     </div>
                   </div>
                 ))}
@@ -534,31 +534,31 @@ function App() {
 
             {/* Weather & Local Food Grid */}
             <div className="grid grid-cols-2 gap-4 text-xs">
-              <div className="bg-slate-900/90 p-3 rounded-xl border border-emerald-900/60 flex items-center gap-3 shadow-md">
+              <div className="bg-slate-900/90 p-3 rounded-xl border border-cyan-900/60 flex items-center gap-3 shadow-md">
                 <span className="text-xl">🌤️</span>
                 <div>
                   <p className="text-slate-400">Weather Forecast</p>
-                  <p className="text-emerald-300 font-semibold">{activeDestination.weather}</p>
+                  <p className="text-cyan-300 font-semibold">{activeDestination.weather}</p>
                 </div>
               </div>
-              <div className="bg-slate-900/90 p-3 rounded-xl border border-emerald-900/60 flex items-center gap-3 shadow-md">
+              <div className="bg-slate-900/90 p-3 rounded-xl border border-cyan-900/60 flex items-center gap-3 shadow-md">
                 <span className="text-xl">🍲</span>
                 <div>
                   <p className="text-slate-400">Local Food Special</p>
-                  <p className="text-emerald-300 font-semibold">{activeDestination.food}</p>
+                  <p className="text-cyan-300 font-semibold">{activeDestination.food}</p>
                 </div>
               </div>
             </div>
 
             {/* Map Header */}
             <div className="pt-2">
-              <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Smart Routing & Destination Map 🗺️</span>
+              <span className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Smart Routing & Destination Map 🗺️</span>
             </div>
 
             {/* Stable Interactive Map Box */}
             <div 
               ref={mapRef} 
-              className="w-full h-80 rounded-xl border border-emerald-900/60 z-10 shadow-inner"
+              className="w-full h-80 rounded-xl border border-cyan-900/60 z-10 shadow-inner"
             ></div>
             <p className="text-[10px] text-slate-300 text-center italic">
               ℹ️ Map displays multiple surrounding offbeat pins & emergency care stations clearly. Click any marker!
@@ -573,32 +573,32 @@ function App() {
             </button>
 
             {/* Budget Breakdown Visualizer */}
-            <div className="bg-slate-900/90 p-4 rounded-xl border border-emerald-900/60 space-y-2 shadow-md">
+            <div className="bg-slate-900/90 p-4 rounded-xl border border-cyan-900/60 space-y-2 shadow-md">
               <div className="flex justify-between items-center text-xs">
-                <span className="font-bold text-emerald-300 uppercase tracking-wider">AI Budget Split Estimation</span>
+                <span className="font-bold text-cyan-300 uppercase tracking-wider">AI Budget Split Estimation</span>
                 <span className="text-slate-300">Total: {formData.budget}</span>
               </div>
               <div className="w-full bg-slate-950 h-3 rounded-full overflow-hidden flex">
-                <div style={{ width: `${activeDestination.budgetSplit.stay}%` }} className="bg-emerald-500" title="Stay & Lodge"></div>
+                <div style={{ width: `${activeDestination.budgetSplit.stay}%` }} className="bg-cyan-500" title="Stay & Lodge"></div>
                 <div style={{ width: `${activeDestination.budgetSplit.transport}%` }} className="bg-teal-500" title="Transport"></div>
-                <div style={{ width: `${activeDestination.budgetSplit.food}%` }} className="bg-green-500" title="Food"></div>
+                <div style={{ width: `${activeDestination.budgetSplit.food}%` }} className="bg-emerald-500" title="Food"></div>
                 <div style={{ width: `${activeDestination.budgetSplit.reserve}%` }} className="bg-amber-500" title="Emergency"></div>
               </div>
               <div className="flex justify-between text-[10px] text-slate-300 pt-1">
-                <span className="text-emerald-400">Stay ({activeDestination.budgetSplit.stay}%)</span>
+                <span className="text-cyan-400">Stay ({activeDestination.budgetSplit.stay}%)</span>
                 <span className="text-teal-400">Transport ({activeDestination.budgetSplit.transport}%)</span>
-                <span className="text-green-400">Food ({activeDestination.budgetSplit.food}%)</span>
+                <span className="text-emerald-400">Food ({activeDestination.budgetSplit.food}%)</span>
                 <span className="text-amber-400">Reserve ({activeDestination.budgetSplit.reserve}%)</span>
               </div>
             </div>
 
             {/* Dynamic Day-Wise Itinerary Section */}
-            <div className="bg-slate-900/90 p-4 rounded-xl border border-emerald-900/60 space-y-2 shadow-md">
-              <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Smart AI Itinerary Plan ({formData.time})</h3>
+            <div className="bg-slate-900/90 p-4 rounded-xl border border-cyan-900/60 space-y-2 shadow-md">
+              <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Smart AI Itinerary Plan ({formData.time})</h3>
               <ul className="space-y-1.5 text-xs text-slate-200">
                 {currentItinerary.map((item, index) => (
                   <li key={index} className="flex items-start gap-2">
-                    <span className="text-emerald-400 font-bold">•</span>
+                    <span className="text-cyan-400 font-bold">•</span>
                     <span>{item}</span>
                   </li>
                 ))}
@@ -606,29 +606,29 @@ function App() {
             </div>
 
             {/* Local Language & Cultural Phrasebook Card */}
-            <div className="bg-slate-900/90 p-4 rounded-xl border border-emerald-900/60 space-y-2 shadow-md">
-              <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Local Language Phrasebook & Tips 🗣️</h3>
+            <div className="bg-slate-900/90 p-4 rounded-xl border border-cyan-900/60 space-y-2 shadow-md">
+              <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Local Language Phrasebook & Tips 🗣️</h3>
               <div className="grid grid-cols-3 gap-2 pt-1">
                 {activeDestination.phrasebook.map((phrase, idx) => (
-                  <div key={idx} className="bg-slate-950/90 p-2.5 rounded-lg border border-emerald-900/50 text-center">
+                  <div key={idx} className="bg-slate-950/90 p-2.5 rounded-lg border border-cyan-900/50 text-center">
                     <p className="text-[10px] text-slate-400">{phrase.english}</p>
-                    <p className="text-xs font-bold text-emerald-300 mt-0.5">{phrase.local}</p>
+                    <p className="text-xs font-bold text-cyan-300 mt-0.5">{phrase.local}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Smart Interactive Packing Checklist */}
-            <div className="bg-slate-900/90 p-4 rounded-xl border border-emerald-900/60 space-y-2 shadow-md">
-              <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Smart Packing Checklist</h3>
+            <div className="bg-slate-900/90 p-4 rounded-xl border border-cyan-900/60 space-y-2 shadow-md">
+              <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Smart Packing Checklist</h3>
               <div className="grid grid-cols-2 gap-2 pt-1">
                 {activeDestination.packingList.map((item, idx) => (
-                  <label key={idx} className="flex items-center gap-2 text-xs text-slate-200 cursor-pointer bg-slate-950/90 p-2 rounded-lg border border-emerald-900/40 hover:bg-slate-950 transition">
+                  <label key={idx} className="flex items-center gap-2 text-xs text-slate-200 cursor-pointer bg-slate-950/90 p-2 rounded-lg border border-cyan-900/40 hover:bg-slate-950 transition">
                     <input 
                       type="checkbox" 
                       checked={!!checkedItems[item]} 
                       onChange={() => handleCheckboxChange(item)}
-                      className="rounded bg-slate-900 border-emerald-800 text-emerald-500 focus:ring-0 cursor-pointer"
+                      className="rounded bg-slate-900 border-cyan-800 text-cyan-500 focus:ring-0 cursor-pointer"
                     />
                     <span className={checkedItems[item] ? 'line-through text-slate-500' : ''}>{item}</span>
                   </label>
@@ -646,13 +646,13 @@ function App() {
             <div className="grid grid-cols-3 gap-3 pt-1">
               <button 
                 onClick={() => setSubmitted(false)}
-                className="bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer border border-emerald-900/50 shadow"
+                className="bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer border border-cyan-900/50 shadow"
               >
                 ← Modify
               </button>
               <button 
                 onClick={downloadItinerary}
-                className="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer shadow-md"
+                className="bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer shadow-md"
               >
                 📥 Download
               </button>
@@ -682,7 +682,7 @@ function App() {
             <div className="bg-slate-900 p-3 rounded-xl border border-slate-800 text-left space-y-1.5 text-xs font-mono">
               <p className="text-slate-400">📍 Status: <span className="text-red-400 font-bold">Services Synced</span></p>
               <p className="text-slate-400">🏥 Nearest Care: <span className="text-white">{activeDestination.hospitalName}</span></p>
-              <p className="text-slate-400">📞 Active Helpline: <span className="text-emerald-400">{activeDestination.emergencyContact}</span></p>
+              <p className="text-slate-400">📞 Active Helpline: <span className="text-cyan-400">{activeDestination.emergencyContact}</span></p>
               <p className="text-slate-400">🛰️ Coords: <span className="text-teal-400">{activeDestination.coords[0]}, {activeDestination.coords[1]}</span></p>
             </div>
 
@@ -701,18 +701,18 @@ function App() {
         {!isChatOpen ? (
           <button 
             onClick={() => setIsChatOpen(true)}
-            className="bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-300 hover:to-teal-400 text-slate-950 font-bold p-4 rounded-full shadow-2xl flex items-center gap-2 cursor-pointer transition transform hover:scale-105 border border-emerald-300/50"
+            className="bg-gradient-to-r from-cyan-400 to-teal-500 hover:from-cyan-300 hover:to-teal-400 text-slate-950 font-bold p-4 rounded-full shadow-2xl flex items-center gap-2 cursor-pointer transition transform hover:scale-105 border border-cyan-300/50 shadow-cyan-500/20"
           >
             <span className="text-xl">🤖</span>
             <span className="text-xs font-semibold pr-1">Ask AI Assistant</span>
           </button>
         ) : (
-          <div className="w-80 h-96 bg-slate-950/95 border border-emerald-800/60 rounded-2xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl z-50">
+          <div className="w-80 h-96 bg-slate-950/95 border border-cyan-800/60 rounded-2xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl z-50">
             {/* Chat Header */}
-            <div className="bg-slate-900 p-3 flex justify-between items-center border-b border-emerald-900/60">
+            <div className="bg-slate-900 p-3 flex justify-between items-center border-b border-cyan-900/60">
               <div className="flex items-center gap-2">
                 <span className="text-base">🤖</span>
-                <span className="text-xs font-bold text-emerald-400">Arovia AI Guide</span>
+                <span className="text-xs font-bold text-cyan-400">Arovia AI Guide</span>
               </div>
               <button 
                 onClick={() => setIsChatOpen(false)}
@@ -726,7 +726,7 @@ function App() {
             <div className="flex-1 p-3 overflow-y-auto space-y-3 text-xs">
               {messages.map((msg, idx) => (
                 <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] p-2.5 rounded-xl ${msg.sender === 'user' ? 'bg-emerald-600 text-slate-950 font-medium rounded-br-none' : 'bg-slate-900 text-slate-200 rounded-bl-none border border-emerald-900/50'}`}>
+                  <div className={`max-w-[85%] p-2.5 rounded-xl ${msg.sender === 'user' ? 'bg-cyan-500 text-slate-950 font-medium rounded-br-none' : 'bg-slate-900 text-slate-200 rounded-bl-none border border-cyan-900/50'}`}>
                     {msg.text}
                   </div>
                 </div>
@@ -734,17 +734,17 @@ function App() {
             </div>
 
             {/* Chat Input Form */}
-            <form onSubmit={handleSendMessage} className="p-2.5 bg-slate-900 border-t border-emerald-900/60 flex gap-2">
+            <form onSubmit={handleSendMessage} className="p-2.5 bg-slate-900 border-t border-cyan-900/60 flex gap-2">
               <input 
                 type="text" 
                 placeholder="Ask about budget, weather, safety..." 
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                className="flex-1 bg-slate-950 border border-emerald-800/60 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
+                className="flex-1 bg-slate-950 border border-cyan-800/60 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
               />
               <button 
                 type="submit"
-                className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-3 py-2 rounded-lg text-xs cursor-pointer"
+                className="bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold px-3 py-2 rounded-lg text-xs cursor-pointer"
               >
                 Send
               </button>
@@ -755,7 +755,7 @@ function App() {
 
       {/* Footer / Team Credits */}
       <footer className="text-center text-xs text-slate-300 pb-3 z-10 font-medium">
-        Developed by <span className="text-emerald-400 font-bold">Team Tournex</span>
+        Developed by <span className="text-cyan-400 font-bold">Team Tournex</span>
       </footer>
 
     </div>
