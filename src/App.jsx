@@ -358,19 +358,25 @@ function App() {
   const currentItinerary = getDynamicItinerary(activeDestination);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-between p-6 relative overflow-x-hidden">
+    <div 
+      className="min-h-screen text-white flex flex-col items-center justify-between p-6 relative overflow-x-hidden"
+      style={{
+        backgroundImage: 'url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       
-      {/* Ambient Background Glowing Blobs for Modern SaaS Look */}
-      <div className="absolute top-10 left-10 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
-      <div className="absolute top-1/3 right-10 w-96 h-96 bg-teal-600/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-10 left-1/3 w-96 h-96 bg-emerald-700/10 rounded-full blur-3xl pointer-events-none"></div>
+      {/* Dark Semi-Transparent Overlay for Perfect Text Readability */}
+      <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-[2px] pointer-events-none"></div>
 
       {/* Header */}
       <div className="text-center mt-4 z-10">
         <h1 className="text-4xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400 drop-shadow-md">
           AROVIA
         </h1>
-        <p className="text-emerald-300/80 mt-1 text-xs italic">
+        <p className="text-emerald-300/90 mt-1 text-xs italic font-medium">
           "Arovia - Where memories meet your next journey"
         </p>
       </div>
@@ -387,7 +393,7 @@ function App() {
                 name="hub" 
                 value={formData.hub} 
                 onChange={handleChange}
-                className="w-full bg-slate-900 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
+                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
               >
                 <option value="Delhi">Delhi</option>
                 <option value="Mumbai">Mumbai</option>
@@ -404,7 +410,7 @@ function App() {
                   name="time" 
                   value={formData.time} 
                   onChange={handleChange}
-                  className="w-full bg-slate-900 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
+                  className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
                 >
                   <option value="1 Day">1 Day</option>
                   <option value="2 Days">2 Days</option>
@@ -420,7 +426,7 @@ function App() {
                   name="budget" 
                   value={formData.budget} 
                   onChange={handleChange}
-                  className="w-full bg-slate-900 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
+                  className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
                 />
               </div>
             </div>
@@ -432,7 +438,7 @@ function App() {
                 name="interest" 
                 value={formData.interest} 
                 onChange={handleChange}
-                className="w-full bg-slate-900 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
+                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
               >
                 <option value="Heritage & Culture">Heritage & Culture</option>
                 <option value="Nature & Wildlife">Nature & Wildlife</option>
@@ -448,7 +454,7 @@ function App() {
                 name="crowdPreference" 
                 value={formData.crowdPreference} 
                 onChange={handleChange}
-                className="w-full bg-slate-900 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
+                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
               >
                 <option value="Less Crowded">Less Crowded (Offbeat Hidden Gem)</option>
                 <option value="Moderate">Moderate</option>
@@ -469,7 +475,7 @@ function App() {
           <div className="space-y-5">
             
             {/* SIH 2026 Alignment Badge */}
-            <div className="bg-emerald-950/80 border border-emerald-700/60 p-2.5 rounded-xl text-center shadow-inner">
+            <div className="bg-emerald-950/90 border border-emerald-700/60 p-2.5 rounded-xl text-center shadow-inner">
               <span className="text-[11px] font-semibold text-emerald-300 tracking-wide uppercase">
                 🏆 Smart India Hackathon 2026 | Sustainable Tourism & Tourist Safety Platform
               </span>
@@ -485,7 +491,7 @@ function App() {
                 <span className="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold border border-emerald-500/30 whitespace-nowrap">
                   {activeDestination.crowd}
                 </span>
-                <span className="text-[10px] text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-700">
+                <span className="text-[10px] text-emerald-300 bg-emerald-950/90 px-2 py-0.5 rounded border border-emerald-700">
                   🌿 {activeDestination.carbonSaved}
                 </span>
               </div>
@@ -535,7 +541,7 @@ function App() {
               ref={mapRef} 
               className="w-full h-80 rounded-xl border border-emerald-900/60 z-10 shadow-inner"
             ></div>
-            <p className="text-[10px] text-slate-400 text-center italic">
+            <p className="text-[10px] text-slate-300 text-center italic">
               ℹ️ Map displays multiple surrounding offbeat pins & emergency care stations clearly. Click any marker!
             </p>
 
@@ -551,7 +557,7 @@ function App() {
             <div className="bg-slate-900/90 p-4 rounded-xl border border-emerald-900/60 space-y-2 shadow-md">
               <div className="flex justify-between items-center text-xs">
                 <span className="font-bold text-emerald-300 uppercase tracking-wider">AI Budget Split Estimation</span>
-                <span className="text-slate-400">Total: {formData.budget}</span>
+                <span className="text-slate-300">Total: {formData.budget}</span>
               </div>
               <div className="w-full bg-slate-950 h-3 rounded-full overflow-hidden flex">
                 <div style={{ width: `${activeDestination.budgetSplit.stay}%` }} className="bg-emerald-500" title="Stay & Lodge"></div>
@@ -559,7 +565,7 @@ function App() {
                 <div style={{ width: `${activeDestination.budgetSplit.food}%` }} className="bg-green-500" title="Food"></div>
                 <div style={{ width: `${activeDestination.budgetSplit.reserve}%` }} className="bg-amber-500" title="Emergency"></div>
               </div>
-              <div className="flex justify-between text-[10px] text-slate-400 pt-1">
+              <div className="flex justify-between text-[10px] text-slate-300 pt-1">
                 <span className="text-emerald-400">Stay ({activeDestination.budgetSplit.stay}%)</span>
                 <span className="text-teal-400">Transport ({activeDestination.budgetSplit.transport}%)</span>
                 <span className="text-green-400">Food ({activeDestination.budgetSplit.food}%)</span>
@@ -570,7 +576,7 @@ function App() {
             {/* Dynamic Day-Wise Itinerary Section */}
             <div className="bg-slate-900/90 p-4 rounded-xl border border-emerald-900/60 space-y-2 shadow-md">
               <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Smart AI Itinerary Plan ({formData.time})</h3>
-              <ul className="space-y-1.5 text-xs text-slate-300">
+              <ul className="space-y-1.5 text-xs text-slate-200">
                 {currentItinerary.map((item, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <span className="text-emerald-400 font-bold">•</span>
@@ -585,7 +591,7 @@ function App() {
               <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Local Language Phrasebook & Tips 🗣️</h3>
               <div className="grid grid-cols-3 gap-2 pt-1">
                 {activeDestination.phrasebook.map((phrase, idx) => (
-                  <div key={idx} className="bg-slate-950 p-2.5 rounded-lg border border-emerald-900/50 text-center">
+                  <div key={idx} className="bg-slate-950/90 p-2.5 rounded-lg border border-emerald-900/50 text-center">
                     <p className="text-[10px] text-slate-400">{phrase.english}</p>
                     <p className="text-xs font-bold text-emerald-300 mt-0.5">{phrase.local}</p>
                   </div>
@@ -598,7 +604,7 @@ function App() {
               <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Smart Packing Checklist</h3>
               <div className="grid grid-cols-2 gap-2 pt-1">
                 {activeDestination.packingList.map((item, idx) => (
-                  <label key={idx} className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer bg-slate-950 p-2 rounded-lg border border-emerald-900/40 hover:bg-slate-900 transition">
+                  <label key={idx} className="flex items-center gap-2 text-xs text-slate-200 cursor-pointer bg-slate-950/90 p-2 rounded-lg border border-emerald-900/40 hover:bg-slate-950 transition">
                     <input 
                       type="checkbox" 
                       checked={!!checkedItems[item]} 
@@ -612,16 +618,16 @@ function App() {
             </div>
 
             {/* Emergency & Safety Footer Info */}
-            <div className="flex justify-between items-center bg-red-950/40 border border-red-900/50 p-3 rounded-xl text-xs">
-              <span className="text-red-400 font-medium">Hospital: {activeDestination.hospitalName}</span>
-              <span className="text-slate-300 font-mono">Helpline: {activeDestination.emergencyContact}</span>
+            <div className="flex justify-between items-center bg-red-950/60 border border-red-900/50 p-3 rounded-xl text-xs">
+              <span className="text-red-300 font-medium">Hospital: {activeDestination.hospitalName}</span>
+              <span className="text-slate-200 font-mono">Helpline: {activeDestination.emergencyContact}</span>
             </div>
 
             {/* Action Buttons */}
             <div className="grid grid-cols-3 gap-3 pt-1">
               <button 
                 onClick={() => setSubmitted(false)}
-                className="bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer border border-emerald-900/50"
+                className="bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer border border-emerald-900/50 shadow"
               >
                 ← Modify
               </button>
@@ -682,7 +688,7 @@ function App() {
             <span className="text-xs font-semibold pr-1">Ask AI Assistant</span>
           </button>
         ) : (
-          <div className="w-80 h-96 bg-slate-950 border border-emerald-800/60 rounded-2xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl z-50">
+          <div className="w-80 h-96 bg-slate-950/95 border border-emerald-800/60 rounded-2xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl z-50">
             {/* Chat Header */}
             <div className="bg-slate-900 p-3 flex justify-between items-center border-b border-emerald-900/60">
               <div className="flex items-center gap-2">
@@ -729,8 +735,8 @@ function App() {
       </div>
 
       {/* Footer / Team Credits */}
-      <footer className="text-center text-xs text-slate-500 pb-2 z-10">
-        Developed by <span className="text-slate-400 font-medium">Team Tournex</span>
+      <footer className="text-center text-xs text-slate-300 pb-2 z-10 font-medium">
+        Developed by <span className="text-emerald-400 font-bold">Team Tournex</span>
       </footer>
 
     </div>
