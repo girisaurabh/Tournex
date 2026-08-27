@@ -1,696 +1,765 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import {
-  MapPin, Compass, CloudSun, UtensilsCrossed, Wallet, ShieldAlert,
-  MessageCircle, Download, Share2, Check, X, Phone, Leaf, Backpack,
-  Languages, Navigation, Send, ChevronLeft, HeartPulse, Sparkles
-} from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
-/* ------------------------------------------------------------------ */
-/*  DATA — unchanged content, same shape as the original app          */
-/* ------------------------------------------------------------------ */
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+
+// Hub-wise data upgraded with surrounding nearby offbeat spots & carbon offset metrics
 const hubData = {
   Delhi: {
-    name: 'Alwar', tag: 'Offbeat Heritage & Nature',
+    name: 'Alwar (Offbeat Heritage & Nature)',
     coords: [27.5530, 76.6346],
-    distanceInfo: '122 km from Delhi · ~2.5 hrs via NH 48',
-    hospital: [27.5700, 76.6100], hospitalName: 'General Hospital Alwar (2.4 km)',
-    crowd: 'Low density', desc: 'Escape the city rush to historical Sariska and quiet forts.',
-    weather: '24°C · pleasant & breezy', food: 'Alwar Ka Mawa & Dal Baati Churma',
-    ecoScore: '96% eco-friendly', carbonSaved: '14.2 kg CO₂ saved',
+    distanceInfo: '🚗 ~122 km from Delhi (2.5 hrs via NH 48)',
+    hospital: [27.5700, 76.6100],
+    hospitalName: 'General Hospital Alwar (2.4 km)',
+    crowd: 'Low Density (Safe)',
+    desc: 'Escape the city rush to historical Sariska and quiet forts.',
+    weather: '24°C, Pleasant & Breezy',
+    food: 'Alwar Ka Mawa & Dal Baati Churma',
+    ecoScore: '96% Eco-Friendly (Low Carbon Impact)',
+    carbonSaved: '14.2 kg CO₂ Saved',
     budgetSplit: { stay: 45, transport: 25, food: 20, reserve: 10 },
-    packingList: ['Trekking shoes', 'Reusable water bottle', 'Binoculars for safari', 'Light jacket'],
+    packingList: ['Trekking Shoes 🥾', 'Reusable Water Bottle 💧', 'Binoculars for Safari 🔭', 'Light Jacket 🧥'],
     scenicSpots: [
-      { title: 'Sariska Tiger Reserve', tag: 'Wildlife safari' },
-      { title: 'Siliserh Lake Palace', tag: 'Scenic water view' },
-      { title: 'Bala Quila Fort', tag: 'Ancient architecture' }
+      { title: 'Sariska Tiger Reserve', tag: 'Wildlife Safari' },
+      { title: 'Siliserh Lake Palace', tag: 'Scenic Water View' },
+      { title: 'Bala Quila Fort', tag: 'Ancient Architecture' }
     ],
     nearbySpots: [
-      { name: 'Sariska Tiger Reserve', coords: [27.3200, 76.4400], desc: 'Wildlife sanctuary & tiger habitat' },
+      { name: 'Sariska Tiger Reserve', coords: [27.3200, 76.4400], desc: 'Famous wildlife sanctuary & tiger habitat' },
       { name: 'Siliserh Lake Palace', coords: [27.5100, 76.5800], desc: 'Royal lakeside palace & boating point' },
-      { name: 'Bala Quila Fort', coords: [27.5700, 76.6000], desc: 'Hilltop fort overlooking Alwar city' }
+      { name: 'Bala Quila Fort', coords: [27.5700, 76.6000], desc: 'Historic hilltop fort overlooking Alwar city' }
     ],
     phrasebook: [
-      { english: 'Welcome', local: 'Khamma Ghani' },
-      { english: 'How much is this?', local: 'Ye kitne ka hai?' },
-      { english: 'Thank you', local: 'Dhanyawad' }
+      { english: 'Welcome / Greetings', local: 'Khamma Ghani 🙏' },
+      { english: 'How much is this?', local: 'Ye kitne ka hai? 💰' },
+      { english: 'Thank you', local: 'Dhanyawad / Bhalai 👍' }
     ],
     itinerary: [
-      'Arrival & check-in at eco-lodge, evening walk at Siliserh Lake.',
-      'Morning wildlife safari at Sariska Tiger Reserve, evening fort exploration.',
-      'Local heritage shopping & return journey to Delhi.',
-      'Sunrise trek to nearby heritage hills and artisan workshop visit.',
-      'Eco-village interaction, traditional lunch, and final departure.'
+      'Day 1: Arrival & Check-in at Eco-Lodge, Evening walk at Siliserh Lake.',
+      'Day 2: Morning wildlife safari at Sariska Tiger Reserve, Evening fort exploration.',
+      'Day 3: Local heritage shopping & return journey to Delhi.',
+      'Day 4: Sunrise trek to nearby heritage hills and local artisan workshop visit.',
+      'Day 5: Eco-village interaction, traditional lunch, and final departure.'
     ],
-    emergencyContact: '+91-144-2330011',
+    emergencyContact: '+91-144-2330011 (Alwar Helpline)',
     chatResponses: {
-      safe: 'Alwar and Sariska are very secure for travellers, especially in daylight. Tourist police patrols are active.',
-      bestTime: 'October to March is ideal — pleasant weather and active wildlife sightings.',
-      food: 'Don\u2019t miss authentic Alwar Ka Mawa from the main-town halwais.'
+      safe: 'Alwar and Sariska are very secure for travelers, especially during daylight hours. Local tourist police patrols are active.',
+      bestTime: 'October to March is the ideal window due to pleasant weather and active wildlife sightings.',
+      food: 'Do not miss authentic Alwar Ka Mawa from the main town halwais!'
     }
   },
   Mumbai: {
-    name: 'Matheran', tag: 'Eco-Sensitive Hill Station',
+    name: 'Matheran (Eco-Sensitive Hill Station)',
     coords: [18.9863, 73.3670],
-    distanceInfo: '83 km from Mumbai · ~2 hrs via Eastern Express Hwy',
-    hospital: [18.9900, 73.3700], hospitalName: 'Matheran Cottage Hospital (1.1 km)',
-    crowd: 'Very low · vehicle-free', desc: 'Asia\u2019s only automobile-free hill station with pristine viewpoints.',
-    weather: '22°C · mist & cool winds', food: 'Chikki, Vada Pav & local thali',
-    ecoScore: '99% zero-emission zone', carbonSaved: '18.5 kg CO₂ saved',
+    distanceInfo: '🚆 ~83 km from Mumbai (2 hrs via Eastern Express Hwy)',
+    hospital: [18.9900, 73.3700],
+    hospitalName: 'Matheran Cottage Hospital (1.1 km)',
+    crowd: 'Very Low (Vehicle-Free Zone)',
+    desc: 'Asia’s only automobile-free hill station with pristine viewpoints.',
+    weather: '22°C, Mist & Cool Winds',
+    food: 'Chikki, Vada Pav & Local Thali',
+    ecoScore: '99% Zero-Emission Zone (No Vehicles)',
+    carbonSaved: '18.5 kg CO₂ Saved',
     budgetSplit: { stay: 50, transport: 20, food: 20, reserve: 10 },
-    packingList: ['Comfortable walking shoes', 'Rain poncho / umbrella', 'Eco-friendly snack box', 'Cap / sunglasses'],
+    packingList: ['Comfortable Walking Shoes 👟', 'Rain Poncho / Umbrella ☔', 'Eco-friendly Snack Box 🍫', 'Cap / Sunglasses 🕶️'],
     scenicSpots: [
-      { title: 'Panorama Point', tag: '360° sunrise view' },
-      { title: 'Charlotte Lake', tag: 'Serene water body' },
-      { title: 'Historic Toy Train', tag: 'Heritage ride' }
+      { title: 'Panorama Point', tag: '360° Sunrise View' },
+      { title: 'Charlotte Lake', tag: 'Serene Water Body' },
+      { title: 'Historic Toy Train', tag: 'Heritage Ride' }
     ],
     nearbySpots: [
-      { name: 'Panorama Point', coords: [18.9920, 73.3600], desc: 'Best 360° sunrise and sunset view' },
-      { name: 'Charlotte Lake', coords: [18.9800, 73.3750], desc: 'Quiet picnic spot near Louisa Point' },
-      { name: 'Karnala Bird Sanctuary', coords: [18.8850, 73.1150], desc: 'En-route sanctuary with rare bird species' }
+      { name: 'Panorama Point', coords: [18.9920, 73.3600], desc: 'Best 360-degree sunrise and sunset view' },
+      { name: 'Charlotte Lake', coords: [18.9800, 73.3750], desc: 'Quiet picnic spot with historic Louisa Point nearby' },
+      { name: 'Karnala Bird Sanctuary', coords: [18.8850, 73.1150], desc: 'En route green sanctuary with rare bird species' }
     ],
     phrasebook: [
-      { english: 'How are you?', local: 'Kasa kay?' },
-      { english: 'Let\u2019s go', local: 'Chala' },
-      { english: 'Thank you', local: 'Dhanyavad' }
+      { english: 'How are you?', local: 'Kasa kay? 😊' },
+      { english: 'Let’s go', local: 'Chala 🚶‍♂️' },
+      { english: 'Thank you', local: 'Dhanyavad 🙏' }
     ],
     itinerary: [
-      'Toy-train ride / trek up, sunset view at Panorama Point.',
-      'Echo Point exploration and horse riding through green trails.',
-      'Charlotte Lake relaxation & checkout.',
-      'Deep-forest nature walk towards Garbut Point and photography.',
-      'Souvenir shopping at Central Bazaar and peaceful departure.'
+      'Day 1: Toy train ride/trek up, sunset view at Panorama Point.',
+      'Day 2: Echo Point exploration and horse riding through green trails.',
+      'Day 3: Charlotte Lake relaxation & checkout.',
+      'Day 4: Deep forest nature walk towards Garbut Point and photography.',
+      'Day 5: Souvenir shopping at Central Bazaar and peaceful departure.'
     ],
-    emergencyContact: '+91-2148-230222',
+    emergencyContact: '+91-2148-230222 (Matheran Help Desk)',
     chatResponses: {
-      safe: 'Extremely safe — no cars or heavy vehicles allowed inside the hill station. Pedestrian-friendly paths throughout.',
-      bestTime: 'September to February brings lush green landscapes and cool misty weather.',
-      food: 'Try fresh homemade chikki varieties at Central Bazaar.'
+      safe: 'Extremely safe because no cars or heavy vehicles are allowed inside the hill station. Pedestrian-friendly paths!',
+      bestTime: 'September to February offers lush green landscapes and cool misty weather.',
+      food: 'Try fresh homemade Chikki varieties at Central Bazaar.'
     }
   },
   Jaipur: {
-    name: 'Sambhar Salt Lake', tag: 'Mirror Lake & Skies',
+    name: 'Sambhar Salt Lake (Mirror Lake & Skies)',
     coords: [26.9044, 75.1953],
-    distanceInfo: '80 km from Jaipur · ~1.5 hrs via NH 8',
-    hospital: [26.9200, 75.2000], hospitalName: 'Community Health Centre, Sambhar (3.0 km)',
-    crowd: 'Ultra low · peaceful', desc: 'India\u2019s largest inland salt lake, with surreal photography spots.',
-    weather: '29°C · clear & sunny', food: 'Mirchi Bada & traditional Ghevar',
-    ecoScore: '92% conservation hub', carbonSaved: '11.0 kg CO₂ saved',
+    distanceInfo: '🚙 ~80 km from Jaipur (1.5 hrs via NH 8)',
+    hospital: [26.9200, 75.2000],
+    hospitalName: 'Community Health Centre Sambhar (3.0 km)',
+    crowd: 'Ultra Low (Peaceful)',
+    desc: 'India’s largest inland salt lake, offering surreal photography spots.',
+    weather: '29°C, Clear Skies & Sunny',
+    food: 'Mirchi Bada & Traditional Ghevar',
+    ecoScore: '92% Desert Conservation Hub',
+    carbonSaved: '11.0 kg CO₂ Saved',
     budgetSplit: { stay: 40, transport: 35, food: 15, reserve: 10 },
-    packingList: ['Sunglasses (high glare)', 'Camera with tripod', 'Sunscreen & hat', 'Electrolyte drinks'],
+    packingList: ['Sunglasses (High Glare) 🕶️', 'Camera with Tripod 📷', 'Sunscreen & Hat 🧢', 'Electrolyte Drinks 🥤'],
     scenicSpots: [
-      { title: 'Infinite Salt Flats', tag: 'Mirror reflection' },
-      { title: 'Shakambari Temple', tag: 'Spiritual trail' },
-      { title: 'Flamingo Point', tag: 'Migratory birds' }
+      { title: 'Infinite Salt Flats', tag: 'Mirror Reflection' },
+      { title: 'Shakambari Temple', tag: 'Spiritual Trail' },
+      { title: 'Flamingo Point', tag: 'Migratory Birds' }
     ],
     nearbySpots: [
-      { name: 'Shakambari Mata Temple', coords: [27.0800, 75.1500], desc: 'Hilltop temple overlooking the salt basin' },
+      { name: 'Shakambari Mata Temple', coords: [27.0800, 75.1500], desc: 'Ancient hilltop temple overlooking salt basin' },
       { name: 'Devyani Kund', coords: [26.9150, 75.1800], desc: 'Historic sacred water reservoir' },
-      { name: 'Sambhar Lake Railway Yard', coords: [26.9250, 75.1900], desc: 'Vintage salt-train tracks and loading station' }
+      { name: 'Sambhar Lake Railway Yard', coords: [26.9250, 75.1900], desc: 'Vintage salt train tracks and loading station' }
     ],
     phrasebook: [
-      { english: 'Hello', local: 'Ram Ram Sa' },
-      { english: 'Where is this?', local: 'Ye kothe hai?' },
-      { english: 'Water please', local: 'Pani milega?' }
+      { english: 'Hello / Greetings', local: 'Ram Ram Sa 👋' },
+      { english: 'Where is this?', local: 'Ye kothe hai? 📍' },
+      { english: 'Water please', local: 'Pani milega? 💧' }
     ],
     itinerary: [
-      'Arrival near salt flats, sunset reflection photography.',
-      'Migratory bird watching along the Shakambari Mata temple trail.',
-      'Local handicraft tour & return.',
-      'Exploring Devyani Kund and the vintage salt-heritage railway yard.',
-      'Desert sunrise view and a traditional Rajasthani feast.'
+      'Day 1: Arrival near salt flats, sunset reflection photography.',
+      'Day 2: Migratory bird watching (Shakambari Mata temple trail).',
+      'Day 3: Local handicraft tour & return.',
+      'Day 4: Exploring Devyani Kund and vintage salt heritage railway yard.',
+      'Day 5: Desert sunrise view and traditional Rajasthani feast.'
     ],
-    emergencyContact: '+91-1421-222111',
+    emergencyContact: '+91-1421-222111 (Sambhar Emergency)',
     chatResponses: {
-      safe: 'A safe, open salt-flat expanse — best visited in daylight with a local guide.',
-      bestTime: 'November to February is perfect for spotting flamingos and clear reflection skies.',
-      food: 'Enjoy spicy mirchi badas at the local roadside stalls.'
+      safe: 'Safe area, but since it is an open salt flat expanse, it is recommended to visit during daylight with local guides.',
+      bestTime: 'November to February is perfect for spotting thousands of flamingos and clear reflection skies.',
+      food: 'Enjoy spicy Mirchi Badas at local roadside stalls.'
     }
   },
   Bengaluru: {
-    name: 'Nandi Hills', tag: 'Sunrise Viewpoint',
+    name: 'Nandi Hills (Sunrise Viewpoint)',
     coords: [13.3702, 77.6835],
-    distanceInfo: '60 km from Bengaluru · ~1 hr 15 min via NH 44',
-    hospital: [13.3800, 77.6700], hospitalName: 'Government Hospital, Chickballapur (4.5 km)',
-    crowd: 'Moderate · best at dawn', desc: 'Ancient hill fortress overlooking misty clouds and scenic tracks.',
-    weather: '20°C · misty & refreshing', food: 'Bisi Bele Bath & filter coffee',
-    ecoScore: '95% protected hillside', carbonSaved: '12.8 kg CO₂ saved',
+    distanceInfo: '🏍️ ~60 km from Bengaluru (1 hr 15 mins via NH 44)',
+    hospital: [13.3800, 77.6700],
+    hospitalName: 'Government Hospital Chickballapur (4.5 km)',
+    crowd: 'Moderate (Early Morning Best)',
+    desc: 'Ancient hill fortress overlooking misty clouds and scenic tracks.',
+    weather: '20°C, Misty & Refreshing',
+    food: 'Bisi Bele Bath & Filter Coffee',
+    ecoScore: '95% Hillside Protected Zone',
+    carbonSaved: '12.8 kg CO₂ Saved',
     budgetSplit: { stay: 35, transport: 30, food: 25, reserve: 10 },
-    packingList: ['Windcheater / woolen', 'Action camera / phone mount', 'Snacks for early trek', 'First-aid kit'],
+    packingList: ['Windcheater / Woolen 🧣', 'Action Camera / Phone Mount 📱', 'Snacks for Early Trek 🥪', 'First Aid Kit 🩹'],
     scenicSpots: [
-      { title: 'Tipu\u2019s Drop Summit', tag: 'Cliff viewpoint' },
-      { title: 'Bhoga Nandeeshwara', tag: '9th-century temple' },
-      { title: 'Cloud Horizon Point', tag: 'Sea of clouds' }
+      { title: 'Tipu’s Drop Summit', tag: 'Cliff Viewpoint' },
+      { title: 'Bhoga Nandeeshwara', tag: '9th Century Temple' },
+      { title: 'Cloud Horizon Point', tag: 'Sea of Clouds' }
     ],
     nearbySpots: [
-      { name: 'Bhoga Nandeeshwara Temple', coords: [13.3650, 77.7050], desc: '9th-century Chola architectural marvel' },
+      { name: 'Bhoga Nandeeshwara Temple', coords: [13.3650, 77.7050], desc: 'Exquisite 9th-century Chola architectural marvel' },
       { name: 'Skandagiri Hills', coords: [13.4150, 77.6550], desc: 'Popular night-trekking and star-gazing peak' },
-      { name: 'Tipu\u2019s Summer Palace', coords: [13.3710, 77.6820], desc: 'Historic wooden citadel at the hilltop' }
+      { name: 'Tipu’s Summer Palace', coords: [13.3710, 77.6820], desc: 'Historic wooden citadel at hilltop' }
     ],
     phrasebook: [
-      { english: 'Hello', local: 'Namaskara' },
-      { english: 'How are you?', local: 'Hegiddira?' },
-      { english: 'Thank you', local: 'Dhanyavadagalu' }
+      { english: 'Hello', local: 'Namaskara 🙏' },
+      { english: 'How are you?', local: 'Hegiddira? 🤝' },
+      { english: 'Thank you', local: 'Dhanyavadagalu ✨' }
     ],
     itinerary: [
-      'Early sunrise view, Tipu\u2019s Drop exploration.',
-      'Cycling through winding green tracks & Bhoga Nandeeshwara Temple.',
-      'Local vineyard visit & return.',
-      'Skandagiri base exploration and a local pottery-village tour.',
-      'Peaceful hillside meditation and return journey.'
+      'Day 1: Early morning sunrise view, Tipu’s Drop exploration.',
+      'Day 2: Cycling through winding green tracks & Bhoga Nandeeshwara Temple.',
+      'Day 3: Local vineyard visit & return.',
+      'Day 4: Skandagiri base exploration and local pottery village tour.',
+      'Day 5: Peaceful hillside meditation and return journey.'
     ],
-    emergencyContact: '+91-8156-263222',
+    emergencyContact: '+91-8156-263222 (Chickballapur Police)',
     chatResponses: {
-      safe: 'Very safe — heavily visited by morning trekkers and nature enthusiasts from Bengaluru.',
-      bestTime: 'Reach by 5:30 AM to catch the sunrise above the cloud layer.',
-      food: 'Sip authentic South Indian filter coffee at the hilltop cafeterias.'
+      safe: 'Very safe, heavily visited by morning trekkers and nature enthusiasts from Bengaluru.',
+      bestTime: 'Reach by 5:30 AM to witness the breathtaking sunrise above the cloud layer.',
+      food: 'Sip authentic South Indian Filter Coffee at hilltop cafeterias.'
     }
   }
 };
 
-const HUBS = Object.keys(hubData);
-const TIMES = ['1 Day', '2 Days', '3 Days', '4 Days', '5 Days'];
-const INTERESTS = ['Heritage & Culture', 'Nature & Wildlife', 'Adventure & Trekking', 'Spiritual & Wellness'];
-const CROWD_PREFS = ['Less Crowded', 'Moderate', 'Popular Hub'];
-
-/* ------------------------------------------------------------------ */
-/*  FIELD MAP — custom SVG "expedition map" (no external map library) */
-/* ------------------------------------------------------------------ */
-function FieldMap({ destination }) {
-  const W = 440, H = 300, PAD = 46;
-
-  const points = useMemo(() => {
-    const all = [destination.coords, destination.hospital, ...destination.nearbySpots.map(s => s.coords)];
-    const lats = all.map(p => p[0]);
-    const lngs = all.map(p => p[1]);
-    const minLat = Math.min(...lats), maxLat = Math.max(...lats);
-    const minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
-    const latRange = (maxLat - minLat) || 0.02;
-    const lngRange = (maxLng - minLng) || 0.02;
-    const project = ([lat, lng]) => ({
-      x: PAD + ((lng - minLng) / lngRange) * (W - 2 * PAD),
-      y: H - PAD - ((lat - minLat) / latRange) * (H - 2 * PAD)
-    });
-    return {
-      hub: project(destination.coords),
-      hospital: project(destination.hospital),
-      spots: destination.nearbySpots.map(s => ({ ...s, p: project(s.coords) }))
-    };
-  }, [destination]);
-
-  return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full">
-      <defs>
-        <pattern id="contour" width="60" height="60" patternUnits="userSpaceOnUse">
-          <path d="M0 30 Q15 10 30 30 T60 30" fill="none" stroke="#C89B4A" strokeOpacity="0.10" strokeWidth="1" />
-          <path d="M0 45 Q15 25 30 45 T60 45" fill="none" stroke="#7FA084" strokeOpacity="0.10" strokeWidth="1" />
-        </pattern>
-      </defs>
-      <rect width={W} height={H} fill="url(#contour)" />
-
-      {/* dashed routes from hub to each waypoint */}
-      {points.spots.map((s, i) => (
-        <line key={i} x1={points.hub.x} y1={points.hub.y} x2={s.p.x} y2={s.p.y}
-          stroke="#C89B4A" strokeWidth="1.25" strokeDasharray="5 5" strokeOpacity="0.55" />
-      ))}
-      <line x1={points.hub.x} y1={points.hub.y} x2={points.hospital.x} y2={points.hospital.y}
-        stroke="#BD5B38" strokeWidth="1.25" strokeDasharray="3 4" strokeOpacity="0.6" />
-
-      {/* waypoint markers */}
-      {points.spots.map((s, i) => (
-        <g key={i}>
-          <circle cx={s.p.x} cy={s.p.y} r="4.5" fill="#0E1A15" stroke="#7FA084" strokeWidth="2" />
-          <text x={s.p.x} y={s.p.y - 10} textAnchor="middle" fontSize="9.5" fill="#CBD8CC" fontFamily="Inter, sans-serif">
-            {s.name.length > 18 ? s.name.slice(0, 17) + '\u2026' : s.name}
-          </text>
-        </g>
-      ))}
-
-      {/* hospital marker */}
-      <g>
-        <circle cx={points.hospital.x} cy={points.hospital.y} r="5" fill="#2A1512" stroke="#BD5B38" strokeWidth="2" />
-        <path d={`M${points.hospital.x - 2.5} ${points.hospital.y} h5 M${points.hospital.x} ${points.hospital.y - 2.5} v5`}
-          stroke="#E8B4A0" strokeWidth="1.4" />
-      </g>
-
-      {/* hub marker, pulsing */}
-      <g>
-        <circle cx={points.hub.x} cy={points.hub.y} r="12" fill="#C89B4A" opacity="0.18">
-          <animate attributeName="r" values="10;16;10" dur="2.8s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.28;0.02;0.28" dur="2.8s" repeatCount="indefinite" />
-        </circle>
-        <circle cx={points.hub.x} cy={points.hub.y} r="6.5" fill="#C89B4A" stroke="#0E1A15" strokeWidth="1.5" />
-      </g>
-
-      {/* compass rose */}
-      <g transform={`translate(${W - 42}, 40) rotate(8)`} opacity="0.8">
-        <circle r="20" fill="none" stroke="#EDE7D8" strokeOpacity="0.35" strokeWidth="1" />
-        <path d="M0 -18 L4 0 L0 18 L-4 0 Z" fill="#EDE7D8" fillOpacity="0.5" />
-        <text y="-24" textAnchor="middle" fontSize="9" fill="#EDE7D8" fillOpacity="0.7" fontFamily="IBM Plex Mono, monospace">N</text>
-      </g>
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  APP                                                                */
-/* ------------------------------------------------------------------ */
-export default function App() {
+function App() {
   const [formData, setFormData] = useState({
-    hub: 'Delhi', time: '3 Days', budget: '10000',
-    interest: 'Heritage & Culture', crowdPreference: 'Less Crowded'
+    hub: 'Delhi',
+    time: '3 Days',
+    budget: '₹10,000',
+    interest: 'Heritage & Culture',
+    crowdPreference: 'Less Crowded'
   });
+
   const [submitted, setSubmitted] = useState(false);
   const [checkedItems, setCheckedItems] = useState({});
+
+  // Chatbot State
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState('');
   const [messages, setMessages] = useState([
-    { sender: 'ai', text: 'Namaste! I\u2019m your Arovia field guide. Ask me about weather, safety, food, or budget for this route.' }
+    { sender: 'ai', text: 'Hello! I am your Arovia AI Assistant. Ask me about weather, safety, food, or budget for your trip!' }
   ]);
+
+  // Emergency Modal State
   const [isSosActive, setIsSosActive] = useState(false);
 
-  const handleChange = useCallback((e) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  }, []);
+  const mapRef = useRef(null);
+  const mapInstanceRef = useRef(null);
 
-  const handleSubmit = useCallback((e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     setCheckedItems({});
     setSubmitted(true);
-  }, []);
+  };
 
-  const handleCheckboxChange = useCallback((item) => {
+  const handleCheckboxChange = (item) => {
     setCheckedItems(prev => ({ ...prev, [item]: !prev[item] }));
-  }, []);
+  };
 
-  const activeDestination = hubData[formData.hub] || hubData.Delhi;
-
-  const currentItinerary = useMemo(() => {
+  // Helper to dynamically calculate itinerary days based on selected dropdown time
+  const getDynamicItinerary = (destination) => {
     const match = formData.time.match(/\d+/);
-    const numDays = match ? parseInt(match[0], 10) : 3;
-    const base = activeDestination.itinerary;
+    const numDays = match ? parseInt(match[0]) : 3;
+    const baseItinerary = destination.itinerary;
     const result = [];
-    for (let i = 0; i < numDays; i++) {
-      result.push(base[i] || `Exploration of hidden trails and eco-sightseeing near ${activeDestination.name}.`);
+
+    for (let i = 1; i <= numDays; i++) {
+      if (baseItinerary[i - 1]) {
+        result.push(baseItinerary[i - 1]);
+      } else {
+        result.push(`Day ${i}: Exploration of hidden trails, local photography, and eco-sightseeing at ${destination.name}.`);
+      }
     }
     return result;
-  }, [formData.time, activeDestination]);
+  };
 
-  const handleSendMessage = useCallback((e) => {
+  // Smart Chat Message Handler
+  const handleSendMessage = (e) => {
     e.preventDefault();
-    const text = chatInput.trim();
-    if (!text) return;
-    setMessages(prev => [...prev, { sender: 'user', text }]);
+    if (!chatInput.trim()) return;
+
+    const userText = chatInput;
+    const newMessages = [...messages, { sender: 'user', text: userText }];
+    setMessages(newMessages);
     setChatInput('');
 
-    const lower = text.toLowerCase();
-    let reply = `Following the day-wise route for ${activeDestination.name} is your best bet for an offbeat experience.`;
-    if (/\b(hi|hello|hey)\b/.test(lower)) {
-      reply = `Hello! You\u2019re routed to ${activeDestination.name} from ${formData.hub}. Ask me about weather, food, safety, or budget.`;
-    } else if (/(safe|danger|police)/.test(lower)) {
-      reply = activeDestination.chatResponses.safe;
-    } else if (/(weather|temp|climate|rain)/.test(lower)) {
-      reply = `Current forecast for ${activeDestination.name}: ${activeDestination.weather}.`;
-    } else if (/(food|eat|dish|restaurant|taste)/.test(lower)) {
-      reply = `Must-try in ${activeDestination.name}: ${activeDestination.food}.`;
-    } else if (/(time|season|month|when|best)/.test(lower)) {
-      reply = activeDestination.chatResponses.bestTime;
-    } else if (/(budget|cost|money|price|expense)/.test(lower)) {
-      const b = activeDestination.budgetSplit;
-      reply = `Budget \u20b9${formData.budget}: stay ${b.stay}%, transport ${b.transport}%, food ${b.food}%, reserve ${b.reserve}%.`;
-    } else if (/(hospital|emergency|help)/.test(lower)) {
-      reply = `Nearest care: ${activeDestination.hospitalName}. Helpline ${activeDestination.emergencyContact}.`;
-    }
-    setTimeout(() => setMessages(prev => [...prev, { sender: 'ai', text: reply }]), 500);
-  }, [chatInput, activeDestination, formData.hub, formData.budget]);
+    setTimeout(() => {
+      const activeDest = hubData[formData.hub] || hubData['Delhi'];
+      const lower = userText.toLowerCase();
+      let reply = `That's a fantastic query regarding ${activeDest.name}! Our AI routing engine suggests following the recommended day-wise itinerary for the best offbeat experience.`;
 
-  const downloadItinerary = useCallback(() => {
-    const d = activeDestination;
-    const content =
-`AROVIA \u2014 FIELD ITINERARY
-========================
-Destination: ${d.name} (${d.tag})
-Starting hub: ${formData.hub} \u2014 ${d.distanceInfo}
-Duration: ${formData.time}
-Budget: \u20b9${formData.budget}
-Weather: ${d.weather}
-Local food: ${d.food}
-Sustainability: ${d.ecoScore}, ${d.carbonSaved}
+      if (lower.includes('hi') || lower.includes('hello') || lower.includes('hey')) {
+        reply = `Hello! I'm your Arovia AI guide. You are exploring ${activeDest.name} starting from ${formData.hub}. Ask me about weather, food, safety, or budget!`;
+      } else if (lower.includes('safe') || lower.includes('safety') || lower.includes('danger') || lower.includes('police')) {
+        reply = activeDest.chatResponses.safe;
+      } else if (lower.includes('weather') || lower.includes('temp') || lower.includes('climate') || lower.includes('rain') || lower.includes('mausam')) {
+        reply = `Current weather forecast for ${activeDest.name}: ${activeDest.weather}.`;
+      } else if (lower.includes('food') || lower.includes('eat') || lower.includes('dish') || lower.includes('restaurant') || lower.includes('taste') || lower.includes('khana')) {
+        reply = `Must-try local delicacy in ${activeDest.name}: ${activeDest.food}!`;
+      } else if (lower.includes('time') || lower.includes('season') || lower.includes('month') || lower.includes('when') || lower.includes('best')) {
+        reply = activeDest.chatResponses.bestTime;
+      } else if (lower.includes('budget') || lower.includes('cost') || lower.includes('money') || lower.includes('price') || lower.includes('expense')) {
+        reply = `Your total budget is set to ${formData.budget}. Estimated split: Stay (${activeDest.budgetSplit.stay}%), Transport (${activeDest.budgetSplit.transport}%), Food (${activeDest.budgetSplit.food}%), Reserve (${activeDest.budgetSplit.reserve}%).`;
+      } else if (lower.includes('hospital') || lower.includes('emergency') || lower.includes('help')) {
+        reply = `Nearest emergency healthcare is ${activeDest.hospitalName}. Helpline: ${activeDest.emergencyContact}.`;
+      }
 
-DAY-WISE PLAN
-${currentItinerary.map((s, i) => `Day ${i + 1}: ${s}`).join('\n')}
+      setMessages(prev => [...prev, { sender: 'ai', text: reply }]);
+    }, 600);
+  };
 
-EMERGENCY
-Hospital: ${d.hospitalName}
-Helpline: ${d.emergencyContact}
-
-Arovia Platform \u00b7 Team Tournex`;
+  // Download Itinerary as Text File
+  const downloadItinerary = () => {
+    const activeDest = hubData[formData.hub] || hubData['Delhi'];
+    const currentItinerary = getDynamicItinerary(activeDest);
+    const content = `=================================\n AROVIA - SMART TRAVEL ITINERARY\n=================================\nDestination: ${activeDest.name}\nStarting Hub: ${formData.hub} (${activeDest.distanceInfo})\nTime Allocated: ${formData.time}\nEstimated Budget: ${formData.budget}\nWeather Forecast: ${activeDest.weather}\nLocal Food Specialty: ${activeDest.food}\nEco-Sustainability Score: ${activeDest.ecoScore} (${activeDest.carbonSaved})\n\nDAY-WISE PLAN:\n${currentItinerary.join('\n')}\n\nEMERGENCY & SAFETY:\nNearest Hospital: ${activeDest.hospitalName}\nHelpline: ${activeDest.emergencyContact}\n\nDeveloped by Team Tournex\nArovia Platform`;
+    
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = `Arovia_${formData.hub}_Itinerary.txt`;
     a.click();
-    URL.revokeObjectURL(url);
-  }, [activeDestination, formData, currentItinerary]);
+  };
 
-  const shareOnWhatsApp = useCallback(() => {
-    const d = activeDestination;
-    const text = encodeURIComponent(
-      `Arovia route: ${d.name} from ${formData.hub} (${formData.time})\n${d.distanceInfo}\nWeather: ${d.weather}\nEco-impact: ${d.carbonSaved}`
-    );
+  // Share on WhatsApp
+  const shareOnWhatsApp = () => {
+    const activeDest = hubData[formData.hub] || hubData['Delhi'];
+    const text = encodeURIComponent(`🚀 Check out my Arovia Personalized Route for *${activeDest.name}* starting from ${formData.hub} (${formData.time})!\n\n📍 ${activeDest.distanceInfo}\n🌤️ Weather: ${activeDest.weather}\n🌿 Eco-Impact: ${activeDest.carbonSaved}\n\nGenerated via Arovia Platform.`);
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
-  }, [activeDestination, formData]);
+  };
+
+  // Leaflet Map Initialization with Auto-Fitting Bounds
+  useEffect(() => {
+    if (submitted && mapRef.current) {
+      const currentDest = hubData[formData.hub] || hubData['Delhi'];
+
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+
+      const map = L.map(mapRef.current);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; Arovia Intelligence Routing'
+      }).addTo(map);
+
+      const markerCoordinates = [];
+
+      // Main Destination Marker
+      L.marker(currentDest.coords).addTo(map)
+        .bindPopup(`<b>🎯 Main Hub: ${currentDest.name}</b><br />Crowd: ${currentDest.crowd}`);
+      markerCoordinates.push(currentDest.coords);
+
+      // Hospital Marker
+      L.circleMarker(currentDest.hospital, {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.6,
+        radius: 8
+      }).addTo(map).bindPopup(`<b>🏥 Emergency Care:</b> ${currentDest.hospitalName}`);
+      markerCoordinates.push(currentDest.hospital);
+
+      // Surrounding Offbeat Spot Markers
+      currentDest.nearbySpots.forEach((spot) => {
+        L.marker(spot.coords).addTo(map)
+          .bindPopup(`<b>📍 Offbeat Spot: ${spot.name}</b><br />${spot.desc}`);
+        markerCoordinates.push(spot.coords);
+      });
+
+      const bounds = L.latLngBounds(markerCoordinates);
+      map.fitBounds(bounds, { padding: [40, 40] });
+
+      mapInstanceRef.current = map;
+    }
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, [submitted, formData.hub]);
+
+  const activeDestination = hubData[formData.hub] || hubData['Delhi'];
+  const currentItinerary = getDynamicItinerary(activeDestination);
 
   return (
-    <div className="min-h-screen w-full" style={{ background: '#0E1A15', color: '#EDE7D8', fontFamily: 'Inter, sans-serif' }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
-        .font-display { font-family: 'Fraunces', serif; }
-        .font-mono { font-family: 'IBM Plex Mono', monospace; }
-        .ledger-row + .ledger-row { border-top: 1px dashed rgba(237,231,216,0.14); }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-thumb { background: rgba(200,155,74,0.4); border-radius: 4px; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-up { animation: fadeUp .45s ease both; }
-        input:focus, select:focus { outline: none; box-shadow: 0 0 0 2px rgba(200,155,74,0.45); }
-        @media (prefers-reduced-motion: reduce) { .fade-up, * { animation: none !important; transition: none !important; } }
-      `}</style>
+    <div 
+      className="min-h-screen text-white flex flex-col items-center justify-between p-6 relative overflow-x-hidden selection:bg-emerald-500 selection:text-slate-950"
+      style={{
+        backgroundImage: 'url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      
+      {/* Dark Premium Frosted Overlay */}
+      <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-[3px] pointer-events-none"></div>
 
-      {/* backdrop texture */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.06]"
-        style={{ backgroundImage: 'radial-gradient(#C89B4A 0.6px, transparent 0.6px)', backgroundSize: '22px 22px' }} />
+      {/* Header */}
+      <div className="text-center mt-6 z-10">
+        <h1 className="text-5xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500 drop-shadow-lg">
+          AROVIA
+        </h1>
+        <p className="text-emerald-300/90 mt-1 text-sm italic font-medium tracking-wide">
+          "Arovia - Where memories meet your next journey"
+        </p>
+      </div>
 
-      <div className="relative max-w-3xl mx-auto px-5 py-10 sm:py-14">
-        {/* header */}
-        <header className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-2.5">
-            <Compass size={22} strokeWidth={1.6} color="#C89B4A" />
-            <div>
-              <h1 className="font-display text-2xl tracking-wide leading-none" style={{ color: '#EDE7D8' }}>Arovia</h1>
-              <p className="font-mono text-[10px] tracking-widest uppercase" style={{ color: '#7FA084' }}>Sustainable Route Log</p>
+      {/* Main Container - Figma Glassmorphic Panel */}
+      <div className="w-full max-w-2xl bg-slate-950/90 backdrop-blur-2xl border border-emerald-500/30 p-8 rounded-3xl shadow-2xl shadow-emerald-950/80 my-8 z-10 transition-all duration-300 hover:border-emerald-500/50">
+        
+        {!submitted ? (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            
+            {/* Form Title Card Header */}
+            <div className="text-center pb-3 border-b border-emerald-900/60">
+              <h2 className="text-base font-bold text-emerald-400 flex items-center justify-center gap-2">
+                <span>🗺️</span> AI Sustainable Trip Customizer
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">Configure your parameters for smart offbeat routing</p>
             </div>
-          </div>
-          <span className="font-mono text-[10px] px-2.5 py-1 rounded-full border" style={{ borderColor: 'rgba(200,155,74,0.35)', color: '#C89B4A' }}>
-            SIH 2026
-          </span>
-        </header>
 
-        {/* panel */}
-        <div className="rounded-2xl border overflow-hidden fade-up" style={{ background: '#16241C', borderColor: 'rgba(237,231,216,0.1)' }}>
-          {!submitted ? (
-            <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5">
-              <div className="pb-4" style={{ borderBottom: '1px dashed rgba(237,231,216,0.14)' }}>
-                <p className="font-mono text-[10px] uppercase tracking-widest mb-1" style={{ color: '#7FA084' }}>Expedition brief</p>
-                <h2 className="font-display text-xl">Plan your offbeat route</h2>
-              </div>
+            {/* Starting Hub */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
+                <span>📍</span> Starting Tourism Hub
+              </label>
+              <select 
+                name="hub" 
+                value={formData.hub} 
+                onChange={handleChange}
+                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
+              >
+                <option value="Delhi">Delhi</option>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Jaipur">Jaipur</option>
+                <option value="Bengaluru">Bengaluru</option>
+              </select>
+            </div>
 
-              <Field label="Starting hub" icon={<MapPin size={13} />}>
-                <select name="hub" value={formData.hub} onChange={handleChange} className={selectClass}>
-                  {HUBS.map(h => <option key={h} value={h}>{h}</option>)}
+            {/* Time Constraint (Dropdown) & Budget Row */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
+                  <span>⏱️</span> Time Duration
+                </label>
+                <select 
+                  name="time" 
+                  value={formData.time} 
+                  onChange={handleChange}
+                  className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
+                >
+                  <option value="1 Day">1 Day</option>
+                  <option value="2 Days">2 Days</option>
+                  <option value="3 Days">3 Days</option>
+                  <option value="4 Days">4 Days</option>
+                  <option value="5 Days">5 Days</option>
                 </select>
-              </Field>
-
-              <div className="grid grid-cols-2 gap-4">
-                <Field label="Duration" icon={<Navigation size={13} />}>
-                  <select name="time" value={formData.time} onChange={handleChange} className={selectClass}>
-                    {TIMES.map(t => <option key={t} value={t}>{t}</option>)}
-                  </select>
-                </Field>
-                <Field label="Budget (\u20b9)" icon={<Wallet size={13} />}>
-                  <input type="text" name="budget" value={formData.budget} onChange={handleChange} className={selectClass} />
-                </Field>
               </div>
-
-              <Field label="Primary interest" icon={<Sparkles size={13} />}>
-                <select name="interest" value={formData.interest} onChange={handleChange} className={selectClass}>
-                  {INTERESTS.map(i => <option key={i} value={i}>{i}</option>)}
-                </select>
-              </Field>
-
-              <Field label="Crowd preference" icon={<Leaf size={13} />}>
-                <select name="crowdPreference" value={formData.crowdPreference} onChange={handleChange} className={selectClass}>
-                  {CROWD_PREFS.map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </Field>
-
-              <button type="submit"
-                className="w-full font-semibold text-sm py-3.5 rounded-xl mt-2 transition-transform hover:-translate-y-0.5"
-                style={{ background: '#C89B4A', color: '#0E1A15' }}>
-                Chart my route
-              </button>
-            </form>
-          ) : (
-            <div className="p-5 sm:p-7 space-y-5 fade-up">
-              {/* destination header */}
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="font-mono text-[10px] uppercase tracking-widest mb-1" style={{ color: '#7FA084' }}>{activeDestination.tag}</p>
-                  <h2 className="font-display text-2xl leading-tight">{activeDestination.name}</h2>
-                  <p className="text-sm mt-1.5 max-w-md" style={{ color: 'rgba(237,231,216,0.7)' }}>{activeDestination.desc}</p>
-                  <p className="font-mono text-[11px] mt-2" style={{ color: '#C89B4A' }}>{activeDestination.distanceInfo} \u00b7 {formData.time}</p>
-                </div>
-                <div className="text-right shrink-0">
-                  <span className="inline-block font-mono text-[10px] px-2.5 py-1 rounded-full border" style={{ borderColor: 'rgba(127,160,132,0.4)', color: '#7FA084' }}>
-                    {activeDestination.crowd}
-                  </span>
-                  <p className="font-mono text-[10px] mt-1.5" style={{ color: '#C89B4A' }}>{activeDestination.carbonSaved}</p>
-                </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
+                  <span>💰</span> Budget Limit
+                </label>
+                <input 
+                  type="text" 
+                  name="budget" 
+                  value={formData.budget} 
+                  onChange={handleChange}
+                  className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
+                />
               </div>
+            </div>
 
-              {/* scenic spot stamps */}
-              <div className="grid grid-cols-3 gap-2.5">
-                {activeDestination.scenicSpots.map((s, i) => (
-                  <div key={i} className="rounded-xl p-3 text-center border" style={{ background: '#1D3226', borderColor: 'rgba(200,155,74,0.2)' }}>
-                    <p className="text-xs font-semibold leading-snug">{s.title}</p>
-                    <p className="font-mono text-[9px] mt-1" style={{ color: '#7FA084' }}>{s.tag}</p>
+            {/* Interests */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
+                <span>✨</span> Primary Interests
+              </label>
+              <select 
+                name="interest" 
+                value={formData.interest} 
+                onChange={handleChange}
+                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
+              >
+                <option value="Heritage & Culture">Heritage & Culture</option>
+                <option value="Nature & Wildlife">Nature & Wildlife</option>
+                <option value="Adventure & Trekking">Adventure & Trekking</option>
+                <option value="Spiritual & Wellness">Spiritual & Wellness</option>
+              </select>
+            </div>
+
+            {/* Crowd Preference */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300 mb-2 flex items-center gap-2">
+                <span>🌿</span> Crowd Preference
+              </label>
+              <select 
+                name="crowdPreference" 
+                value={formData.crowdPreference} 
+                onChange={handleChange}
+                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all shadow-inner"
+              >
+                <option value="Less Crowded">Less Crowded (Offbeat Hidden Gem)</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Popular Hub">Popular Hub</option>
+              </select>
+            </div>
+
+            {/* Submit Button */}
+            <button 
+              type="submit"
+              className="w-full bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 hover:from-emerald-300 hover:to-teal-400 text-slate-950 font-extrabold py-4 rounded-xl transition-all duration-300 shadow-xl shadow-emerald-950/80 hover:shadow-emerald-500/20 cursor-pointer mt-4 text-xs tracking-widest uppercase transform hover:-translate-y-0.5"
+            >
+              Generate Personalized Route 🚀
+            </button>
+          </form>
+        ) : (
+          /* Result & Interactive Map Screen */
+          <div className="space-y-5">
+            
+            {/* SIH 2026 Alignment Badge */}
+            <div className="bg-emerald-950/90 border border-emerald-600/40 p-2.5 rounded-xl text-center shadow-inner">
+              <span className="text-[11px] font-semibold text-emerald-300 tracking-wide uppercase">
+                🏆 Smart India Hackathon 2026 | Sustainable Tourism & Tourist Safety Platform
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center bg-slate-900/90 border border-emerald-800/50 p-4 rounded-xl shadow-md">
+              <div>
+                <h2 className="text-base font-bold text-emerald-400">{activeDestination.name}</h2>
+                <p className="text-xs text-slate-300 mt-1">{activeDestination.desc}</p>
+                <p className="text-[11px] text-teal-300 mt-1 font-mono">📍 {activeDestination.distanceInfo} | ⏱️ {formData.time}</p>
+              </div>
+              <div className="flex flex-col items-end gap-1">
+                <span className="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold border border-emerald-500/30 whitespace-nowrap">
+                  {activeDestination.crowd}
+                </span>
+                <span className="text-[10px] text-emerald-300 bg-emerald-950/90 px-2 py-0.5 rounded border border-emerald-700">
+                  🌿 {activeDestination.carbonSaved}
+                </span>
+              </div>
+            </div>
+
+            {/* Scenic Spot Preview Gallery Cards */}
+            <div className="space-y-2">
+              <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Scenic Spot Highlights & Map Pins 📸</h3>
+              <div className="grid grid-cols-3 gap-3">
+                {activeDestination.scenicSpots.map((spot, idx) => (
+                  <div key={idx} className="bg-gradient-to-br from-slate-900 to-slate-950 p-3 rounded-xl border border-emerald-900/60 text-center shadow-md flex flex-col justify-between hover:border-emerald-500/40 transition">
+                    <span className="text-2xl mb-1">🌄</span>
+                    <div>
+                      <p className="text-xs font-bold text-white">{spot.title}</p>
+                      <span className="text-[10px] text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded-full inline-block mt-1 border border-emerald-800/40">{spot.tag}</span>
+                    </div>
                   </div>
                 ))}
               </div>
+            </div>
 
-              {/* weather / food */}
-              <div className="grid grid-cols-2 gap-3">
-                <InfoCard icon={<CloudSun size={16} color="#C89B4A" />} label="Weather" value={activeDestination.weather} />
-                <InfoCard icon={<UtensilsCrossed size={16} color="#C89B4A" />} label="Local food" value={activeDestination.food} />
-              </div>
-
-              {/* field map */}
-              <div>
-                <SectionLabel icon={<MapPin size={12} />} text="Route map" />
-                <div className="rounded-xl overflow-hidden border" style={{ borderColor: 'rgba(237,231,216,0.12)', background: '#111F17' }}>
-                  <FieldMap destination={activeDestination} />
+            {/* Weather & Local Food Grid */}
+            <div className="grid grid-cols-2 gap-4 text-xs">
+              <div className="bg-slate-900/90 p-3 rounded-xl border border-emerald-900/60 flex items-center gap-3 shadow-md">
+                <span className="text-xl">🌤️</span>
+                <div>
+                  <p className="text-slate-400">Weather Forecast</p>
+                  <p className="text-emerald-300 font-semibold">{activeDestination.weather}</p>
                 </div>
               </div>
-
-              <button onClick={() => setIsSosActive(true)}
-                className="w-full flex items-center justify-center gap-2 font-semibold text-sm py-3 rounded-xl border transition-transform hover:-translate-y-0.5"
-                style={{ background: 'rgba(189,91,56,0.15)', borderColor: '#BD5B38', color: '#E8AA92' }}>
-                <ShieldAlert size={16} /> Emergency assistant & nearby services
-              </button>
-
-              {/* budget */}
-              <div className="rounded-xl p-4 border" style={{ background: '#1D3226', borderColor: 'rgba(237,231,216,0.1)' }}>
-                <div className="flex justify-between items-center mb-2">
-                  <SectionLabel icon={<Wallet size={12} />} text="Budget split" />
-                  <span className="font-mono text-xs" style={{ color: '#EDE7D8' }}>\u20b9{formData.budget}</span>
+              <div className="bg-slate-900/90 p-3 rounded-xl border border-emerald-900/60 flex items-center gap-3 shadow-md">
+                <span className="text-xl">🍲</span>
+                <div>
+                  <p className="text-slate-400">Local Food Special</p>
+                  <p className="text-emerald-300 font-semibold">{activeDestination.food}</p>
                 </div>
-                <div className="w-full h-2.5 rounded-full overflow-hidden flex" style={{ background: '#0E1A15' }}>
-                  <div style={{ width: `${activeDestination.budgetSplit.stay}%`, background: '#C89B4A' }} />
-                  <div style={{ width: `${activeDestination.budgetSplit.transport}%`, background: '#7FA084' }} />
-                  <div style={{ width: `${activeDestination.budgetSplit.food}%`, background: '#4C7A63' }} />
-                  <div style={{ width: `${activeDestination.budgetSplit.reserve}%`, background: '#BD5B38' }} />
-                </div>
-                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2.5 font-mono text-[10px]" style={{ color: 'rgba(237,231,216,0.65)' }}>
-                  <span>Stay {activeDestination.budgetSplit.stay}%</span>
-                  <span>Transport {activeDestination.budgetSplit.transport}%</span>
-                  <span>Food {activeDestination.budgetSplit.food}%</span>
-                  <span>Reserve {activeDestination.budgetSplit.reserve}%</span>
-                </div>
-              </div>
-
-              {/* itinerary */}
-              <div className="rounded-xl p-4 border" style={{ background: '#1D3226', borderColor: 'rgba(237,231,216,0.1)' }}>
-                <SectionLabel icon={<Navigation size={12} />} text={`Itinerary \u00b7 ${formData.time}`} />
-                <ul className="mt-2.5 space-y-2.5">
-                  {currentItinerary.map((item, i) => (
-                    <li key={i} className="flex gap-3 text-sm">
-                      <span className="font-mono text-xs shrink-0 mt-0.5" style={{ color: '#C89B4A' }}>{String(i + 1).padStart(2, '0')}</span>
-                      <span style={{ color: 'rgba(237,231,216,0.85)' }}>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* phrasebook */}
-              <div className="rounded-xl p-4 border" style={{ background: '#1D3226', borderColor: 'rgba(237,231,216,0.1)' }}>
-                <SectionLabel icon={<Languages size={12} />} text="Phrasebook" />
-                <div className="grid grid-cols-3 gap-2 mt-2.5">
-                  {activeDestination.phrasebook.map((p, i) => (
-                    <div key={i} className="rounded-lg p-2 text-center border" style={{ background: '#0E1A15', borderColor: 'rgba(237,231,216,0.08)' }}>
-                      <p className="text-[9.5px]" style={{ color: 'rgba(237,231,216,0.5)' }}>{p.english}</p>
-                      <p className="text-xs font-semibold mt-0.5" style={{ color: '#7FA084' }}>{p.local}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* packing checklist */}
-              <div className="rounded-xl p-4 border" style={{ background: '#1D3226', borderColor: 'rgba(237,231,216,0.1)' }}>
-                <SectionLabel icon={<Backpack size={12} />} text="Packing checklist" />
-                <div className="grid grid-cols-2 gap-2 mt-2.5">
-                  {activeDestination.packingList.map((item, i) => {
-                    const on = !!checkedItems[item];
-                    return (
-                      <label key={i}
-                        className="flex items-center gap-2 text-xs px-2.5 py-2 rounded-lg border cursor-pointer select-none"
-                        style={{ background: '#0E1A15', borderColor: on ? 'rgba(200,155,74,0.4)' : 'rgba(237,231,216,0.08)' }}>
-                        <span className="w-4 h-4 rounded flex items-center justify-center border shrink-0"
-                          style={{ borderColor: on ? '#C89B4A' : 'rgba(237,231,216,0.3)', background: on ? '#C89B4A' : 'transparent' }}>
-                          {on && <Check size={11} color="#0E1A15" strokeWidth={3} />}
-                        </span>
-                        <input type="checkbox" className="hidden" checked={on} onChange={() => handleCheckboxChange(item)} />
-                        <span style={{ color: on ? 'rgba(237,231,216,0.4)' : '#EDE7D8', textDecoration: on ? 'line-through' : 'none' }}>{item}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* emergency strip */}
-              <div className="flex justify-between items-center gap-3 rounded-xl p-3.5 border text-xs"
-                style={{ background: 'rgba(189,91,56,0.1)', borderColor: 'rgba(189,91,56,0.3)' }}>
-                <span className="flex items-center gap-1.5" style={{ color: '#E8AA92' }}><HeartPulse size={13} /> {activeDestination.hospitalName}</span>
-                <span className="font-mono flex items-center gap-1.5" style={{ color: '#EDE7D8' }}><Phone size={12} /> {activeDestination.emergencyContact}</span>
-              </div>
-
-              {/* actions */}
-              <div className="grid grid-cols-3 gap-2.5 pt-1">
-                <ActionBtn onClick={() => setSubmitted(false)} icon={<ChevronLeft size={14} />} label="Modify" muted />
-                <ActionBtn onClick={downloadItinerary} icon={<Download size={14} />} label="Download" accent />
-                <ActionBtn onClick={shareOnWhatsApp} icon={<Share2 size={14} />} label="Share" />
               </div>
             </div>
-          )}
-        </div>
 
-        <footer className="text-center text-[11px] mt-8" style={{ color: 'rgba(237,231,216,0.35)' }}>
-          Developed by <span style={{ color: '#7FA084' }}>Team Tournex</span>
-        </footer>
+            {/* Map Header */}
+            <div className="pt-2">
+              <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Smart Routing & Destination Map 🗺️</span>
+            </div>
+
+            {/* Stable Interactive Map Box */}
+            <div 
+              ref={mapRef} 
+              className="w-full h-80 rounded-xl border border-emerald-900/60 z-10 shadow-inner"
+            ></div>
+            <p className="text-[10px] text-slate-300 text-center italic">
+              ℹ️ Map displays multiple surrounding offbeat pins & emergency care stations clearly. Click any marker!
+            </p>
+
+            {/* Emergency Assistant & Nearby Services Button */}
+            <button 
+              onClick={() => setIsSosActive(true)}
+              className="w-full bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg cursor-pointer flex items-center justify-center gap-2 border border-red-500/40 animate-pulse text-sm"
+            >
+              <span>🚨</span> Emergency Assistant & Nearby Services
+            </button>
+
+            {/* Budget Breakdown Visualizer */}
+            <div className="bg-slate-900/90 p-4 rounded-xl border border-emerald-900/60 space-y-2 shadow-md">
+              <div className="flex justify-between items-center text-xs">
+                <span className="font-bold text-emerald-300 uppercase tracking-wider">AI Budget Split Estimation</span>
+                <span className="text-slate-300">Total: {formData.budget}</span>
+              </div>
+              <div className="w-full bg-slate-950 h-3 rounded-full overflow-hidden flex">
+                <div style={{ width: `${activeDestination.budgetSplit.stay}%` }} className="bg-emerald-500" title="Stay & Lodge"></div>
+                <div style={{ width: `${activeDestination.budgetSplit.transport}%` }} className="bg-teal-500" title="Transport"></div>
+                <div style={{ width: `${activeDestination.budgetSplit.food}%` }} className="bg-green-500" title="Food"></div>
+                <div style={{ width: `${activeDestination.budgetSplit.reserve}%` }} className="bg-amber-500" title="Emergency"></div>
+              </div>
+              <div className="flex justify-between text-[10px] text-slate-300 pt-1">
+                <span className="text-emerald-400">Stay ({activeDestination.budgetSplit.stay}%)</span>
+                <span className="text-teal-400">Transport ({activeDestination.budgetSplit.transport}%)</span>
+                <span className="text-green-400">Food ({activeDestination.budgetSplit.food}%)</span>
+                <span className="text-amber-400">Reserve ({activeDestination.budgetSplit.reserve}%)</span>
+              </div>
+            </div>
+
+            {/* Dynamic Day-Wise Itinerary Section */}
+            <div className="bg-slate-900/90 p-4 rounded-xl border border-emerald-900/60 space-y-2 shadow-md">
+              <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Smart AI Itinerary Plan ({formData.time})</h3>
+              <ul className="space-y-1.5 text-xs text-slate-200">
+                {currentItinerary.map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="text-emerald-400 font-bold">•</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Local Language & Cultural Phrasebook Card */}
+            <div className="bg-slate-900/90 p-4 rounded-xl border border-emerald-900/60 space-y-2 shadow-md">
+              <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Local Language Phrasebook & Tips 🗣️</h3>
+              <div className="grid grid-cols-3 gap-2 pt-1">
+                {activeDestination.phrasebook.map((phrase, idx) => (
+                  <div key={idx} className="bg-slate-950/90 p-2.5 rounded-lg border border-emerald-900/50 text-center">
+                    <p className="text-[10px] text-slate-400">{phrase.english}</p>
+                    <p className="text-xs font-bold text-emerald-300 mt-0.5">{phrase.local}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Smart Interactive Packing Checklist */}
+            <div className="bg-slate-900/90 p-4 rounded-xl border border-emerald-900/60 space-y-2 shadow-md">
+              <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Smart Packing Checklist</h3>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                {activeDestination.packingList.map((item, idx) => (
+                  <label key={idx} className="flex items-center gap-2 text-xs text-slate-200 cursor-pointer bg-slate-950/90 p-2 rounded-lg border border-emerald-900/40 hover:bg-slate-950 transition">
+                    <input 
+                      type="checkbox" 
+                      checked={!!checkedItems[item]} 
+                      onChange={() => handleCheckboxChange(item)}
+                      className="rounded bg-slate-900 border-emerald-800 text-emerald-500 focus:ring-0 cursor-pointer"
+                    />
+                    <span className={checkedItems[item] ? 'line-through text-slate-500' : ''}>{item}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Emergency & Safety Footer Info */}
+            <div className="flex justify-between items-center bg-red-950/60 border border-red-900/50 p-3 rounded-xl text-xs">
+              <span className="text-red-300 font-medium">Hospital: {activeDestination.hospitalName}</span>
+              <span className="text-slate-200 font-mono">Helpline: {activeDestination.emergencyContact}</span>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="grid grid-cols-3 gap-3 pt-1">
+              <button 
+                onClick={() => setSubmitted(false)}
+                className="bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer border border-emerald-900/50 shadow"
+              >
+                ← Modify
+              </button>
+              <button 
+                onClick={downloadItinerary}
+                className="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer shadow-md"
+              >
+                📥 Download
+              </button>
+              <button 
+                onClick={shareOnWhatsApp}
+                className="bg-teal-600 hover:bg-teal-500 text-white font-medium py-2.5 rounded-lg transition duration-200 text-xs cursor-pointer shadow-md flex items-center justify-center gap-1"
+              >
+                <span>💬</span> Share
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* SOS modal */}
+      {/* Emergency Assistant Modal Window */}
       {isSosActive && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(6,10,8,0.85)', backdropFilter: 'blur(4px)' }}>
-          <div className="w-full max-w-sm rounded-2xl p-6 text-center space-y-4 border-2 fade-up" style={{ background: '#16241C', borderColor: '#BD5B38' }}>
-            <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center border" style={{ background: 'rgba(189,91,56,0.15)', borderColor: '#BD5B38' }}>
-              <ShieldAlert size={26} color="#E8AA92" />
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-950 border-2 border-red-600 w-full max-w-md p-6 rounded-2xl shadow-2xl space-y-4 text-center">
+            <div className="w-16 h-16 bg-red-600/20 text-red-500 rounded-full flex items-center justify-center mx-auto text-3xl border border-red-600/40">
+              🚨
             </div>
-            <h2 className="font-display text-lg" style={{ color: '#E8AA92' }}>Emergency assistant</h2>
-            <p className="text-xs" style={{ color: 'rgba(237,231,216,0.65)' }}>
-              Live coordinates and the nearest medical care for this route.
+            <h2 className="text-xl font-bold text-red-500 tracking-wide">Emergency Assistant & Nearby Services</h2>
+            <p className="text-xs text-slate-300">
+              Live GPS coordinates, nearest medical care, and regional emergency services have been successfully synced and broadcasted.
             </p>
-            <div className="rounded-lg p-3 text-left space-y-1.5 font-mono text-[11px]" style={{ background: '#0E1A15', border: '1px solid rgba(237,231,216,0.1)' }}>
-              <p style={{ color: 'rgba(237,231,216,0.5)' }}>Nearest care <span style={{ color: '#EDE7D8' }}>{activeDestination.hospitalName}</span></p>
-              <p style={{ color: 'rgba(237,231,216,0.5)' }}>Helpline <span style={{ color: '#7FA084' }}>{activeDestination.emergencyContact}</span></p>
-              <p style={{ color: 'rgba(237,231,216,0.5)' }}>Coords <span style={{ color: '#C89B4A' }}>{activeDestination.coords[0]}, {activeDestination.coords[1]}</span></p>
+
+            <div className="bg-slate-900 p-3 rounded-xl border border-slate-800 text-left space-y-1.5 text-xs font-mono">
+              <p className="text-slate-400">📍 Status: <span className="text-red-400 font-bold">Services Synced</span></p>
+              <p className="text-slate-400">🏥 Nearest Care: <span className="text-white">{activeDestination.hospitalName}</span></p>
+              <p className="text-slate-400">📞 Active Helpline: <span className="text-emerald-400">{activeDestination.emergencyContact}</span></p>
+              <p className="text-slate-400">🛰️ Coords: <span className="text-teal-400">{activeDestination.coords[0]}, {activeDestination.coords[1]}</span></p>
             </div>
-            <button onClick={() => setIsSosActive(false)}
-              className="w-full py-2.5 rounded-lg text-xs font-semibold border" style={{ borderColor: 'rgba(237,231,216,0.15)', color: '#EDE7D8' }}>
-              Close
+
+            <button 
+              onClick={() => setIsSosActive(false)}
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-lg transition duration-200 text-xs border border-slate-800 cursor-pointer"
+            >
+              Close Assistant Window
             </button>
           </div>
         </div>
       )}
 
-      {/* chat widget */}
-      <div className="fixed bottom-5 right-5 z-40">
+      {/* Floating AI Chat Assistant Widget */}
+      <div className="fixed bottom-6 right-6 z-40">
         {!isChatOpen ? (
-          <button onClick={() => setIsChatOpen(true)}
-            className="flex items-center gap-2 px-4 py-3 rounded-full font-semibold text-xs shadow-lg transition-transform hover:-translate-y-0.5"
-            style={{ background: '#C89B4A', color: '#0E1A15' }}>
-            <MessageCircle size={16} /> Ask field guide
+          <button 
+            onClick={() => setIsChatOpen(true)}
+            className="bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-300 hover:to-teal-400 text-slate-950 font-bold p-4 rounded-full shadow-2xl flex items-center gap-2 cursor-pointer transition transform hover:scale-105 border border-emerald-300/50"
+          >
+            <span className="text-xl">🤖</span>
+            <span className="text-xs font-semibold pr-1">Ask AI Assistant</span>
           </button>
         ) : (
-          <div className="w-80 h-96 rounded-2xl flex flex-col overflow-hidden border shadow-2xl fade-up" style={{ background: '#16241C', borderColor: 'rgba(237,231,216,0.12)' }}>
-            <div className="flex justify-between items-center px-3.5 py-3 border-b" style={{ borderColor: 'rgba(237,231,216,0.1)' }}>
-              <span className="flex items-center gap-2 text-xs font-semibold" style={{ color: '#C89B4A' }}><Compass size={14} /> Arovia field guide</span>
-              <button onClick={() => setIsChatOpen(false)} style={{ color: 'rgba(237,231,216,0.5)' }}><X size={15} /></button>
+          <div className="w-80 h-96 bg-slate-950/95 border border-emerald-800/60 rounded-2xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl z-50">
+            {/* Chat Header */}
+            <div className="bg-slate-900 p-3 flex justify-between items-center border-b border-emerald-900/60">
+              <div className="flex items-center gap-2">
+                <span className="text-base">🤖</span>
+                <span className="text-xs font-bold text-emerald-400">Arovia AI Guide</span>
+              </div>
+              <button 
+                onClick={() => setIsChatOpen(false)}
+                className="text-slate-400 hover:text-white text-sm font-bold px-2 cursor-pointer"
+              >
+                ✕
+              </button>
             </div>
-            <div className="flex-1 p-3 overflow-y-auto space-y-2.5">
-              {messages.map((m, i) => (
-                <div key={i} className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className="max-w-[85%] px-3 py-2 rounded-xl text-xs leading-relaxed"
-                    style={m.sender === 'user'
-                      ? { background: '#C89B4A', color: '#0E1A15', borderBottomRightRadius: 2 }
-                      : { background: '#1D3226', color: '#EDE7D8', borderBottomLeftRadius: 2, border: '1px solid rgba(237,231,216,0.08)' }}>
-                    {m.text}
+
+            {/* Messages Container */}
+            <div className="flex-1 p-3 overflow-y-auto space-y-3 text-xs">
+              {messages.map((msg, idx) => (
+                <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[85%] p-2.5 rounded-xl ${msg.sender === 'user' ? 'bg-emerald-600 text-slate-950 font-medium rounded-br-none' : 'bg-slate-900 text-slate-200 rounded-bl-none border border-emerald-900/50'}`}>
+                    {msg.text}
                   </div>
                 </div>
               ))}
             </div>
-            <form onSubmit={handleSendMessage} className="p-2.5 flex gap-2 border-t" style={{ borderColor: 'rgba(237,231,216,0.1)' }}>
-              <input type="text" placeholder="Ask about budget, weather, safety\u2026" value={chatInput}
+
+            {/* Chat Input Form */}
+            <form onSubmit={handleSendMessage} className="p-2.5 bg-slate-900 border-t border-emerald-900/60 flex gap-2">
+              <input 
+                type="text" 
+                placeholder="Ask about budget, weather, safety..." 
+                value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                className="flex-1 rounded-lg px-3 py-2 text-xs" style={{ background: '#0E1A15', border: '1px solid rgba(237,231,216,0.12)', color: '#EDE7D8' }} />
-              <button type="submit" className="px-3 rounded-lg" style={{ background: '#C89B4A', color: '#0E1A15' }}>
-                <Send size={14} />
+                className="flex-1 bg-slate-950 border border-emerald-800/60 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
+              />
+              <button 
+                type="submit"
+                className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-3 py-2 rounded-lg text-xs cursor-pointer"
+              >
+                Send
               </button>
             </form>
           </div>
         )}
       </div>
+
+      {/* Footer / Team Credits */}
+      <footer className="text-center text-xs text-slate-300 pb-3 z-10 font-medium">
+        Developed by <span className="text-emerald-400 font-bold">Team Tournex</span>
+      </footer>
+
     </div>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/*  small presentational helpers                                      */
-/* ------------------------------------------------------------------ */
-const selectClass = "w-full rounded-lg px-3.5 py-3 text-sm bg-transparent";
-const selectStyleWrap = { background: '#1D3226', border: '1px solid rgba(237,231,216,0.14)', color: '#EDE7D8' };
-
-function Field({ label, icon, children }) {
-  return (
-    <div>
-      <label className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest mb-1.5" style={{ color: '#7FA084' }}>
-        {icon} {label}
-      </label>
-      <div style={selectStyleWrap} className="rounded-lg">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function InfoCard({ icon, label, value }) {
-  return (
-    <div className="rounded-xl p-3 flex items-center gap-2.5 border" style={{ background: '#1D3226', borderColor: 'rgba(237,231,216,0.1)' }}>
-      {icon}
-      <div>
-        <p className="text-[10px]" style={{ color: 'rgba(237,231,216,0.5)' }}>{label}</p>
-        <p className="text-xs font-semibold" style={{ color: '#EDE7D8' }}>{value}</p>
-      </div>
-    </div>
-  );
-}
-
-function SectionLabel({ icon, text }) {
-  return (
-    <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest" style={{ color: '#7FA084' }}>
-      {icon} {text}
-    </span>
-  );
-}
-
-function ActionBtn({ onClick, icon, label, accent, muted }) {
-  const style = accent
-    ? { background: '#C89B4A', color: '#0E1A15' }
-    : muted
-      ? { background: 'transparent', color: '#EDE7D8', border: '1px solid rgba(237,231,216,0.15)' }
-      : { background: '#1D3226', color: '#EDE7D8', border: '1px solid rgba(237,231,216,0.12)' };
-  return (
-    <button onClick={onClick} style={style}
-      className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-semibold transition-transform hover:-translate-y-0.5">
-      {icon} {label}
-    </button>
-  );
-}
+export default App;
