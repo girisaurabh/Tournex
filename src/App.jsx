@@ -372,28 +372,39 @@ function App() {
       <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-[2px] pointer-events-none"></div>
 
       {/* Header */}
-      <div className="text-center mt-4 z-10">
-        <h1 className="text-4xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400 drop-shadow-md">
+      <div className="text-center mt-6 z-10">
+        <h1 className="text-5xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400 drop-shadow-lg">
           AROVIA
         </h1>
-        <p className="text-emerald-300/90 mt-1 text-xs italic font-medium">
+        <p className="text-emerald-300/90 mt-1 text-sm italic font-medium">
           "Arovia - Where memories meet your next journey"
         </p>
       </div>
 
-      {/* Main Container */}
-      <div className="w-full max-w-3xl bg-slate-950/80 backdrop-blur-xl border border-emerald-900/60 p-8 rounded-2xl shadow-2xl my-6 z-10">
+      {/* Main Container - Centered Perfectly & Widened */}
+      <div className="w-full max-w-2xl bg-slate-950/85 backdrop-blur-2xl border border-emerald-500/30 p-8 rounded-3xl shadow-2xl my-8 z-10 shadow-emerald-950/50">
+        
         {!submitted ? (
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             
+            {/* Form Title Card Header */}
+            <div className="text-center pb-2 border-b border-emerald-900/60">
+              <h2 className="text-lg font-bold text-emerald-400 flex items-center justify-center gap-2">
+                <span>🗺️</span> AI Sustainable Trip Customizer
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">Configure your preferences to generate an offbeat smart itinerary</p>
+            </div>
+
             {/* Starting Hub */}
             <div>
-              <label className="block text-sm font-medium text-emerald-300 mb-1.5">Starting Tourism Hub</label>
+              <label className="block text-sm font-semibold text-emerald-300 mb-1.5 flex items-center gap-2">
+                <span>📍</span> Starting Tourism Hub
+              </label>
               <select 
                 name="hub" 
                 value={formData.hub} 
                 onChange={handleChange}
-                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
+                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-white focus:outline-none focus:border-emerald-400 transition shadow-inner"
               >
                 <option value="Delhi">Delhi</option>
                 <option value="Mumbai">Mumbai</option>
@@ -405,12 +416,14 @@ function App() {
             {/* Time Constraint (Dropdown) & Budget Row */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-emerald-300 mb-1.5">Time Constraint (Duration)</label>
+                <label className="block text-sm font-semibold text-emerald-300 mb-1.5 flex items-center gap-2">
+                  <span>⏱️</span> Time Duration
+                </label>
                 <select 
                   name="time" 
                   value={formData.time} 
                   onChange={handleChange}
-                  className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
+                  className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-white focus:outline-none focus:border-emerald-400 transition shadow-inner"
                 >
                   <option value="1 Day">1 Day</option>
                   <option value="2 Days">2 Days</option>
@@ -420,25 +433,29 @@ function App() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-emerald-300 mb-1.5">Budget</label>
+                <label className="block text-sm font-semibold text-emerald-300 mb-1.5 flex items-center gap-2">
+                  <span>💰</span> Budget Limit
+                </label>
                 <input 
                   type="text" 
                   name="budget" 
                   value={formData.budget} 
                   onChange={handleChange}
-                  className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
+                  className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-white focus:outline-none focus:border-emerald-400 transition shadow-inner"
                 />
               </div>
             </div>
 
             {/* Interests */}
             <div>
-              <label className="block text-sm font-medium text-emerald-300 mb-1.5">Interests</label>
+              <label className="block text-sm font-semibold text-emerald-300 mb-1.5 flex items-center gap-2">
+                <span>✨</span> Primary Interests
+              </label>
               <select 
                 name="interest" 
                 value={formData.interest} 
                 onChange={handleChange}
-                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
+                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-white focus:outline-none focus:border-emerald-400 transition shadow-inner"
               >
                 <option value="Heritage & Culture">Heritage & Culture</option>
                 <option value="Nature & Wildlife">Nature & Wildlife</option>
@@ -449,12 +466,14 @@ function App() {
 
             {/* Crowd Preference */}
             <div>
-              <label className="block text-sm font-medium text-emerald-300 mb-1.5">Crowd Preference</label>
+              <label className="block text-sm font-semibold text-emerald-300 mb-1.5 flex items-center gap-2">
+                <span>🌿</span> Crowd Preference
+              </label>
               <select 
                 name="crowdPreference" 
                 value={formData.crowdPreference} 
                 onChange={handleChange}
-                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-400 transition"
+                className="w-full bg-slate-900/90 border border-emerald-800/60 rounded-xl p-3.5 text-white focus:outline-none focus:border-emerald-400 transition shadow-inner"
               >
                 <option value="Less Crowded">Less Crowded (Offbeat Hidden Gem)</option>
                 <option value="Moderate">Moderate</option>
@@ -465,7 +484,7 @@ function App() {
             {/* Submit Button */}
             <button 
               type="submit"
-              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-extrabold py-3.5 rounded-lg transition duration-200 shadow-lg shadow-emerald-950/50 cursor-pointer mt-2"
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-extrabold py-4 rounded-xl transition duration-200 shadow-xl shadow-emerald-950/60 cursor-pointer mt-4 text-sm tracking-wide uppercase"
             >
               Generate Personalized Route 🚀
             </button>
@@ -735,7 +754,7 @@ function App() {
       </div>
 
       {/* Footer / Team Credits */}
-      <footer className="text-center text-xs text-slate-300 pb-2 z-10 font-medium">
+      <footer className="text-center text-xs text-slate-300 pb-3 z-10 font-medium">
         Developed by <span className="text-emerald-400 font-bold">Team Tournex</span>
       </footer>
 
